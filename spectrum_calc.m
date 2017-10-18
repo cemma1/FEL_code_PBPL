@@ -1,4 +1,4 @@
-function [power_spectrum,omega,sigma]=g3spectrum2(field,xlamds,zsep)
+function [power_spectrum,omega,sigma]=spectrum_calc(field,xlamds,zsep)
 
 	nslice=size(field,2);
 	%nz=size(field,2);
