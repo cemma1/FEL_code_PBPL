@@ -2,7 +2,7 @@
 
 % Works with perave_core_v7
 % Defines the resonant phase as a function of z 
-% The code calculates the undulator field K(z) from res_phase(z) at each
+% The Perave code will calculate the undulator field K(z) from res_phase(z) at each
 % integration step
 
 startindex=floor(param.z0/param.stepsize);
