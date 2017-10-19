@@ -33,8 +33,7 @@ if(param.shotnoise)
 end
 
 if (param.prebunching)
-   % thetap(1,islice,:) = thetap(1,islice,:)-2.*param.bunch*sin(thetap(1,islice,:)+param.bunchphase);
-   % Double buncher scheme a la Nick   
+   % Double buncher scheme a la N. Sudar http://www.sciencedirect.com/science/article/pii/S0168900217301924  
     [thetap(1,islice,:),gammap(1,islice,:)]=prebunch_particles(squeeze(thetap(1,islice,:)),squeeze(gammap(1,islice,:)),param);    
    % Single buncher scheme
     %[thetap(1,islice,:),gammap(1,islice,:)]=single_prebuncher_particles(squeeze(thetap(1,islice,:)),squeeze(gammap(1,islice,:)),param);    
