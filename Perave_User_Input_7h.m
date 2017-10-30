@@ -54,10 +54,9 @@ param.sigmax = sqrt(betax*emitx/param.gamma0);            % beam radius
 param.A_e = 2*pi*param.sigmax^2;                          % beam cross section 
 bunchlength=param.nslices*param.zsep*param.lambda0/c;
 %% Simplifying constants
-%if param.helical
 param.chi2 = e0/me/c^2;
 param.chi1=mu0*c/2*param.I/param.A_e;
-%else
-%    param.chi2 = e0/me/c^2/2;
-%param.chi1=mu0*c/2*param.I/param.A_e/2;
-%end
+% Constant for the resonant phase calculation   
+const_resp=1/param.chi2*(param.lambdau/2/param.lambda0);
+
+
