@@ -33,6 +33,10 @@ ps4(:,2)=ps3(:,2)+A2*sin(ps3(:,1));
 % Compression
 ps5(:,1)=ps4(:,1)+B2*ps4(:,2);
 ps5(:,2)=ps4(:,2);
+
+thetanew=ps5(:,1)+param.psir-pi/2;
+etanew=ps5(:,2)*param.deltagamma+param.gamma0;
+
 % Plot the different steps in the transformation if you want
 % figure(1)
 % subplot(2,2,1)
@@ -52,7 +56,3 @@ ps5(:,2)=ps4(:,2);
 % legend(sprintf(['B=',num2str(abs(mean(exp(1i.*ps5(:,1)))))]))
 % ylabel('\Delta \gamma/\sigma_\gamma')
 % set(findobj('type','axes'),'xlim',[0 2*pi],'xgrid','on')
-
-thetanew=ps5(:,1)+param.psir-pi/2;
-etanew=ps5(:,2)*param.deltagamma+param.gamma0;
-
