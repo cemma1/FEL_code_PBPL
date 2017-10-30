@@ -7,7 +7,7 @@ zlocations=linspace(param.stepsize,lwig,30);fundpower=[];sidebandpower=[];
 zindices=round(zlocations/param.stepsize);
 if param.itdp
 omegamin=-5e-3;omegamax=5e-3;
-h=figure(1)
+h=figure(1);
 %set(h, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
 
 for n=1:length(zindices)
@@ -18,11 +18,11 @@ fundpower(n)=trapz(fundspectrum)/trapz(powerspec);
 figure(1)
 subplot(1,2,1)
 %plot((omega+1)*hbar*2*pi*c/param.lambda0,powerspec)%Energy spectrum
-%semilogy(omega,abs(powerspec))
-plot(omega,abs(powerspec))
+semilogy(omega,abs(powerspec))
+%plot(omega,abs(powerspec))
 xlabel('\delta\omega/\omega ','FontSize',16)
     ylabel('P (\omega) [arb. units]','FontSize',16)    
-    xlim([-20,20].*rho1D)    
+    xlim([-100,100].*rho1D)    
     set(gca,'FontSize',16)
     legend(sprintf(['z / L_u =',num2str(zlocations(n)/lwig)]));
     
@@ -39,9 +39,9 @@ end
 %power3(:,:) = abs(radfield_3rd(:,:)).^2/377*param.A_e;
 zpos= [1:param.Nsnap]*param.stepsize;
 % if ~param.itdp
-% Lgfit=gainlength_fit(Lgain,zpos,mean(power,2));
+% Lgfit=fit_gainlength(Lgain,zpos,mean(power,2));
 % end
-figure(2)
+figure(2);
 set(gcf, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
 title('Simulation Output')
 subplot(2,3,1)
@@ -97,11 +97,11 @@ xlim([0,param.Nsnap*param.stepsize]/Lgain)
 xlabel('z/L_g')
 ylabel('Bunching Factor')
 enhance_plot
-for ij=1:param.Nsnap-1
+for ij=1:param.Nsnap
 meanenergy(ij)=mean(abs(mean(gammap(ij,:,:),3)));    
 end
 subplot(2,3,5)
-plot([1:1:param.Nsnap-1]*param.stepsize/Lgain,(meanenergy/meanenergy(1)-1))
+plot([1:1:param.Nsnap]*param.stepsize/Lgain,(meanenergy/meanenergy(1)-1))
 xlabel('z/L_g')
 ylabel('\Delta\gamma/\gamma_0')
 xlim([0,param.Nsnap*param.stepsize]/Lgain)
@@ -160,7 +160,7 @@ figure(2)
 %% Tapering Plots
 zoverlg=zpos./Lgain;
 
-figure(3)
+figure(3);
 annotation('textbox', [0 0.9 1 0.1], ...
     'String', 'Tapering Plots', ...
     'EdgeColor', 'none', ...
@@ -205,8 +205,8 @@ end
 
 if param.phasespacemovie
     filename='particle_movie.gif';
-    figure(10)
-    %set(gcf, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]); 
+    figure(10);
+    
 for i=1:length(zindices)    
     x=linspace(-pi,pi,1e4);
     if param.tapering
@@ -274,7 +274,45 @@ plot(zlocations./param.lambdau,ftrap)
 xlabel('z/\lambda_u');ylabel('f_t [Calculated]');
 %legend(sprintf(['f_t [Theory]=',num2str((psi1-psi2)/2/pi)]))
 enhance_plot
+end
+%% Functions to calculate bucket parameters and fit the gain length
 
+function [ sep ] = separatrix( psi,psir )
+% Calculate height of separatrix at phase psi for resonant phase psir
+% Detailed explanation goes here
+sep = sqrt(abs(cos(psi)+cos(psir)+(psi+psir-pi*sign(psir))*sin(psir)));
+end
+
+function [Lgfit] = fit_gainlength(Lgaintheory,z1,pow);
+
+zmin=5*Lgaintheory;zmax=zmin+10*Lgaintheory;
+pgain=pow(z1>zmin & z1<zmax);
+zgain=z1(z1>zmin & z1<zmax);
+
+Lgfit=(zgain(end)-zgain(1))/(log(pgain(end)/pgain(1)));
+disp(sprintf(['Lg theory = ' num2str(Lgaintheory)]));
+
+% figure
+% semilogy(linspace(zmin,zmax,length(pgain)),pgain)
+% hold on
+% semilogy(linspace(zmin,zmax),pgain(1)*exp((linspace(zmin,zmax)-zmin)./Lgfit),'r--')
 
 end
-    
+
+function [ psi1, psi2, bucket_height, capture_fraction, bucket_area, bunching, sinaverage] = bucket_parameters(psir)
+% Calculate various bucket parameters as a function of psir
+ 
+psi1 = pi - psir;
+pond = @(psi,psir) cos(psi1)+psi1*sin(psir)-(cos(psi)+psi*sin(psir));
+psi2 = fsolve(@(psi) pond(psi,psir),[-pi:psi1*0.99]);
+psi2 = psi2(1);
+bucket_height = sqrt(cos(psir)-(pi/2-psir)*sin(psir));
+bucket_area = (1-sin(psir)) / (1+sin(psir));
+capture_fraction = (psi1 - psi2)/2/pi;
+potential = @(psi,psir) cos(psi)+psi*sin(psir);
+bucket_sep = @(psi) sqrt( (-potential(psi1,psir)+potential(psi,psir))/2);
+bucket_bun = @(psi) bucket_sep(psi).*exp(1i*psi);
+bucket_sin = @(psi) bucket_sep(psi).*sin(psi);
+bunching = abs(integral(bucket_bun,psi2,psi1) / integral(bucket_sep,psi2,psi1));
+sinaverage = abs(integral(bucket_sin,psi2,psi1) / integral(bucket_sep,psi2,psi1));
+end
