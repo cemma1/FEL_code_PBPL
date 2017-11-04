@@ -9,7 +9,7 @@ save([dirname,'/average_bunching'],'bunch')
 %save([dirname,'/average_energy'],'meanenergy')
 save([dirname,'/undulator_field'],'Kz')
 if param.itdp
-[powerspec,omega]=spectrum_calc(radfield(end,:),param.lambda0,param.zsep);
+[powerspec,omega]=spectrum_calc(radfield(param.Nsnap,:),param.lambda0,param.zsep);
 save([dirname,'/output_spectrum'],'powerspec')
 save([dirname,'/output_frequency'],'omega')
 
