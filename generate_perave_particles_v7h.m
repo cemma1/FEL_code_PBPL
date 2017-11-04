@@ -1,19 +1,17 @@
 %% initialize phase space (Quiet - start problem )
 tic
 disp('Loading particles ...');
-Np = param.Np;
 nbins = 64;
-mpart = Np/nbins;
+mpart = param.Np/nbins;
 n_electron = param.I*param.lambda0*param.zsep/e0/c;
-p1 = zeros(Np,1);    
+p1 = zeros(param.Np,1);    
 
-radfield=ones(param.Nsnap,param.nslices)*param.E0;
-%radfield_3rd=ones(param.Nsnap,param.nslices)*param.E03rdharm;
-thetap = zeros(param.Nsnap,param.nslices,Np);
-gammap=zeros(param.Nsnap,param.nslices,Np);
+radfield=param.E0*ones(param.Nsnap,param.nslices);
+thetap = zeros(param.Nsnap,param.nslices,param.Np);
+gammap=zeros(param.Nsnap,param.nslices,param.Np);
 
 for islice = 1:param.nslices
-X0 = hammersley(2,Np);
+X0 = hammersley(2,param.Np);
 gammap(1,islice,:) = param.gamma0+param.deltagamma*X0(1,:);
 
 auxtheta1 = hammersley(1,mpart)'*2*pi/nbins-pi;
@@ -27,7 +25,7 @@ end
 if(param.shotnoise)
     an = 2*sqrt(-log(rand(1))/n_electron);    
     phin = rand(1)*2*pi;
-    for ipart = 1:Np;
+    for ipart = 1:param.Np;
     thetap(1,islice,ipart) = thetap(1,islice,ipart)-an*sin(thetap(1,islice,ipart)+phin);
     end    
 end
@@ -38,7 +36,7 @@ if (param.prebunching)
    % Single buncher scheme
     %[thetap(1,islice,:),gammap(1,islice,:)]=single_prebuncher_particles(squeeze(thetap(1,islice,:)),squeeze(gammap(1,islice,:)),param);    
 end
-bunching(islice) = (sum(exp(1i.*thetap(1,islice,:))/Np));
+bunching(islice) = (sum(exp(1i.*thetap(1,islice,:))/param.Np));
 end
 
 disp('Particles loaded successfully');
