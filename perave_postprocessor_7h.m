@@ -3,13 +3,12 @@ close all
 kw=2*pi/param.lambdau;
 hbar=6.582e-16;
 %% Spectrum as a function of z
+zpos= [1:param.Nsnap]*param.stepsize;
 zlocations=linspace(param.stepsize,lwig,30);fundpower=[];sidebandpower=[];
 zindices=round(zlocations/param.stepsize);
 if param.itdp
 omegamin=-5e-3;omegamax=5e-3;
 h=figure(1);
-%set(h, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
-
 for n=1:length(zindices)
 [powerspec,omega]=spectrum_calc(radfield(zindices(n),:),param.lambda0,param.zsep);
 sidebandindex=omega>omegamin & omega<omegamax;
@@ -17,15 +16,13 @@ fundspectrum=powerspec(sidebandindex);
 fundpower(n)=trapz(fundspectrum)/trapz(powerspec);
 figure(1)
 subplot(1,2,1)
-%plot((omega+1)*hbar*2*pi*c/param.lambda0,powerspec)%Energy spectrum
 semilogy(omega,abs(powerspec))
 %plot(omega,abs(powerspec))
 xlabel('\delta\omega/\omega_0 ','FontSize',16)
     ylabel('P (\omega) [arb. units]','FontSize',16)    
     xlim([-100,100].*rho1D)    
     set(gca,'FontSize',16)
-    legend(sprintf(['z / L_u =',num2str(zlocations(n)/lwig)]));
-    
+    legend(sprintf(['z / L_u =',num2str(zlocations(n)/lwig,'%.1f')]));    legend boxoff
 subplot(1,2,2)
 plot([1:1:size(power,2)]*param.zsep,power(zindices(n),:))
 xlim([1,size(power,2)]*param.zsep)
@@ -36,8 +33,6 @@ drawnow
 end
 end
 %% Radiation Power and spectrum at exit
-%power3(:,:) = abs(radfield_3rd(:,:)).^2/377*param.A_e;
-zpos= [1:param.Nsnap]*param.stepsize;
  if ~param.itdp
  Lgfit=fit_gainlength(Lgain,zpos,mean(power,2));
  end
@@ -48,7 +43,6 @@ subplot(2,3,1)
 semilogy(zpos./Lgain,mean(power,2)/param.Ee/param.I)
 hold on
 xlim([0,zpos(end)]/Lgain)
-%semilogy(ij*param.stepsize,mean(power3,2),'r')
 xlabel('z/L_g')
 ylabel('P/P_{beam}')
 legend(['P_{max}=',num2str(max(mean(power,2)*1e-12),'%.2f'),'TW'],'location','SouthEast'); legend boxoff
@@ -69,22 +63,8 @@ xlim([omega(1)+1,omega(end)+1]*hbar*2*pi*c/param.lambda0)
     ylabel('P (\omega) [arb. units]')
     enhance_plot
     title('Output Spectrum')
-
-% Plot undulator field again
-%     subplot(2,3,6)
-%     plot([1:1:param.Nsnap]*param.stepsize,Kz)
-% xlim([1,param.Nsnap]*param.stepsize)
-% xlabel('z [m]')
-% ylabel('Undulator K')
-% if param.tapering
-% legend(sprintf(['a_w(z)=a_0*(1-c*(z-z_0)^d)\n z_0=',num2str(param.z0),'\n dK/K = ',...
-%     num2str(param.ratio*(lwig-param.z0)^param.order),'\n d=',num2str(param.order)]),'location','SouthWest')
-% ylim([(1-(lwig-param.z0)^param.order*param.ratio),1]*param.K)
-% end
-% enhance_plot
 end
-%% Bunching factor and energy loss (takes a while to calculate)
-
+%% Bunching factor and energy loss 
 figure(2)
 subplot(2,3,4)
 plot([1:1:param.Nsnap-1]*param.stepsize/Lgain,bunch)
@@ -170,15 +150,7 @@ xlabel('z/L_g');ylabel('<E_{rad}> [TV/m]');enhance_plot;xlim([0,zoverlg(end)])
 subplot(2,3,3)
 plot(zoverlg,dgammardz*0.511)
 xlabel('z/L_g');ylabel('d\gamma_r/dz [MeV/m]');enhance_plot;xlim([0,zoverlg(end)])
-%subplot(2,3,5)
-%plot(zoverlg,(psi2-psi1)./2/pi)
-%hold on
-%plot(zoverlg,alpha,'r')
-%ylim([0,1])
-%xlim([0,zoverlg(end)])
-%enhance_plot
-%xlabel('z/L_g')
-%legend('f_b','\alpha')
+% Time dependent resonant phase
 if param.itdp
 subplot(2,3,4)
 plot([1:1:size(radfield,2)]*param.zsep*param.lambda0*1e15/3e8,psirend*180/pi)
