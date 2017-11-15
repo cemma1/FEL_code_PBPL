@@ -18,7 +18,7 @@ param.delz=10;
 param.stepsize = param.lambdau*param.delz;
 param.Nsnap = round(lwig/param.stepsize);                    % number of snapshots to take over the length of the undulator
 param.shotnoise = 1;
-param.zsep = 1;                                                              
+param.zsep = param.delz;                                                              
 if(~param.itdp)
     param.nslices = 1;
     param.shotnoise =0;   % Note if you want to model time independent start-up from noise set P0 = pnoise
