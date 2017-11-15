@@ -47,9 +47,6 @@ title('Simulation Output')
 subplot(2,3,1)
 semilogy(zpos./Lgain,mean(power,2)/param.Ee/param.I)
 hold on
-% if ~param.itdp
-% Lgfit=gainlength_fit(Lgain,zpos,mean(power,2));
-% end
 xlim([0,zpos(end)]/Lgain)
 %semilogy(ij*param.stepsize,mean(power3,2),'r')
 xlabel('z/L_g')
