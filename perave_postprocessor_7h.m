@@ -20,16 +20,16 @@ subplot(1,2,1)
 %plot((omega+1)*hbar*2*pi*c/param.lambda0,powerspec)%Energy spectrum
 semilogy(omega,abs(powerspec))
 %plot(omega,abs(powerspec))
-xlabel('\delta\omega/\omega ','FontSize',16)
+xlabel('\delta\omega/\omega_0 ','FontSize',16)
     ylabel('P (\omega) [arb. units]','FontSize',16)    
     xlim([-100,100].*rho1D)    
     set(gca,'FontSize',16)
     legend(sprintf(['z / L_u =',num2str(zlocations(n)/lwig)]));
     
 subplot(1,2,2)
-plot([1:1:size(power,2)]*param.zsep*param.lambda0*1e15/3e8,power(zindices(n),:))
-xlim([1,size(power,2)]*param.zsep*param.lambda0*1e15/3e8)
-xlabel('t [fs]','FontSize',16)
+plot([1:1:size(power,2)]*param.zsep,power(zindices(n),:))
+xlim([1,size(power,2)]*param.zsep)
+xlabel('ct/\lambda_0 ','FontSize',16)
 ylabel('Output Radiation Power [W]','FontSize',16)
 set(gca,'FontSize',16)
 drawnow
@@ -38,9 +38,9 @@ end
 %% Radiation Power and spectrum at exit
 %power3(:,:) = abs(radfield_3rd(:,:)).^2/377*param.A_e;
 zpos= [1:param.Nsnap]*param.stepsize;
-% if ~param.itdp
-% Lgfit=fit_gainlength(Lgain,zpos,mean(power,2));
-% end
+ if ~param.itdp
+ Lgfit=fit_gainlength(Lgain,zpos,mean(power,2));
+ end
 figure(2);
 set(gcf, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
 title('Simulation Output')
@@ -58,12 +58,10 @@ legend(['P_{max}=',num2str(max(mean(power,2)*1e-12),'%.2f'),'TW'],'location','So
 enhance_plot
 if param.itdp
 subplot(2,3,2)
-plot([1:1:size(power,2)]*param.zsep*param.lambda0*1e15/3e8,power(end,:))
-xlim([1,size(power,2)]*param.zsep*param.lambda0*1e15/3e8)
-xlabel('t [fs]')
+plot([1:1:size(power,2)]*param.zsep,power(end,:))
+xlim([1,size(power,2)]*param.zsep)
+xlabel('ct/\lambda_0')
 ylabel('Power [W]')
-tcoh=sqrt(10*pi)/3/rho1D*param.lambda0/2/pi/3e8;
-legend(sprintf(['t_c ~ ',num2str(tcoh*1e15,'%.2f'),' fs']))
 enhance_plot
 [powerspec,omega]=spectrum_calc(radfield(end,:),param.lambda0,param.zsep);
 subplot(2,3,3)
