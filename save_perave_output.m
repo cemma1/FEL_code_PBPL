@@ -1,15 +1,13 @@
 %save_perave_output
 
-%dirname=['Psir_',num2str(psirvalues(psirindex)),'/'];
-dirname = 'Simulation_output/';
+dirname = 'Simulation_output';
 system(['mkdir ',dirname]);
 save([dirname,'/simulation_parameters'],'param')
 averagepower=mean(power,2);save([dirname,'/averagepower'],'averagepower')
 save([dirname,'/average_bunching'],'bunch')
-%save([dirname,'/average_energy'],'meanenergy')
 save([dirname,'/undulator_field'],'Kz')
 if param.itdp
-[powerspec,omega]=spectrum_calc(radfield(param.Nsnap,:),param.lambda0,param.zsep);
+% Save the output spectrum
 save([dirname,'/output_spectrum'],'powerspec')
 save([dirname,'/output_frequency'],'omega')
 
