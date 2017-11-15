@@ -21,7 +21,7 @@ param.shotnoise = 1;
 param.zsep = 1;                                                              
 if(~param.itdp)
     param.nslices = 1;
-    param.shotnoise =1;   % Note if you want to model time independent start-up from noise set P0 = pnoise
+    param.shotnoise =0;   % Note if you want to model time independent start-up from noise set P0 = pnoise
 else
     param.nslices = round(8*param.Nsnap);                    % Note you want more than 1 slippage length (Nsnap)
 end
