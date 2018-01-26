@@ -139,10 +139,10 @@ for i=1:length(psir)
 
   psi2(i) = pi-psr;
   psi1(i) = fsolve(@(x) cos(x)+x*sin(psr)-cos(psi2(i))-psi2(i)*sin(psr),-pi,options);
-dX=[psi1(i):pi/50:psi2(i)];
-Y=cos(psr)+cos(dX)-(pi-psr-dX)*sin(psr);
-%alpha(i)=sqrt(2)/8*trapz(dX,Y);
-alpha(i)=(1-sin(psr))/(1+sin(psr));%this is an approx. by S.Y. Lee
+ dX=[psi1(i):pi/50:psi2(i)];
+ Y=cos(psr)+cos(dX)-(pi-psr-dX)*sin(psr);
+ %alpha(i)=sqrt(2)/8*trapz(dX,Y);
+ alpha(i)=(1-sin(psr))/(1+sin(psr));%this is an approx. by S.Y. Lee 
   else
       psi2(i)=pi;
       psi1(i)=-pi;
@@ -189,6 +189,12 @@ subplot(2,3,4)
 plot([1:1:size(radfield,2)]*param.zsep*param.lambda0*1e15/3e8,psirend*180/pi)
 xlim([1,size(radfield,2)]*param.zsep*param.lambda0*1e15/3e8)
 xlabel('t [fs]');ylabel('\Psi_R [degree]');enhance_plot;
+else
+    area = sqrt(meanfield.*Kz').*(1-sin(psr))./(1+sin(psr));
+subplot(2,3,4)
+plot(zoverlg,area./area(1))
+xlim([0,zoverlg(end)])
+xlabel('z/L_g');ylabel('Bucket Area [arb. units]');enhance_plot;    
 end
 subplot(2,3,6)
 plot(zoverlg,Kz)
