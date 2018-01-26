@@ -1,5 +1,6 @@
 % This version is for a KMR style 1-D taper where you compute the undulator
 % K step-by-step by specifying a constant resonant phase a priori
+areafun = @(x) (1-sin(x))./(1+sin(x));
 total_simtime = 0;
 % Time dependent case
 if(param.itdp)
@@ -25,7 +26,7 @@ for ij = 1:param.Nsnap-1  % takes Nsnap snapshots along length of undulator
             Kz(ij+1)=Kz(ij)-param.stepsize/const_resp*abs(mean(radfield(ij,param.Nsnap:param.nslices),2)).*sin(res_phase(ij));
             
             % Compute res phase at next step to preserve bucket area
-            %res_phase(ij+1)=;
+            res_phase(ij+1)=finverse(areafun,res_phase*sqrt(mean(abs(radfield(ij,:)).*Kz(ij))./mean(abs(radfield(ij+1,:)).*Kz(ij+1))));
             % Print time taken                
     formatSpec = '%.3f sec from z = %.3f to z = %.3f, total length = %.3f \n';
     fprintf(formatSpec, toc(tstart), param.stepsize*(ij-1), param.stepsize*ij, param.Nsnap*param.stepsize);
