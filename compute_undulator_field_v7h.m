@@ -11,7 +11,9 @@ if param.tapering==0
     res_phase=zeros(1,param.Nsnap);
 else
     res_phase(1:startindex)=0;
-    res_phase(startindex:param.Nsnap)=param.psir;
+    %res_phase(startindex:param.Nsnap)=param.psir;% For const psir taper
+    res_phase(startindex:param.Nsnap)=[];
+    res_phase(startindex)=param.psir;
 end
 Kz(1)=param.K;
 %plot([1:1:param.Nsnap]*param.stepsize,res_phase)
