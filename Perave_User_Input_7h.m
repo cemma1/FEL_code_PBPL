@@ -4,13 +4,13 @@
 param.lambdau = 3.0e-2;                                     % undulator period
 param.K = 2.475; %e0*Bfield*/me/c/ku;                       % RMS undulator parameter
 param.ku = 2.*pi./param.lambdau;                            % undulator wavenumber
-lwig=param.lambdau*1e3;                                     % Undulator length m    
+lwig=param.lambdau*2e3;                                     % Undulator length m    
 % Tapering options
 param.tapering = 1;                                         % tapering (0 no tapering ; 1 decelation)    
 param.z0 = param.lambdau*10;
 param.psir = pi/4;
 %% Simulation control options
-param.phasespacemovie=1;
+param.phasespacemovie=0;
 param.itdp = 0;
 param.saveoutput=1;
 % Set simulation length and # of snapshots
