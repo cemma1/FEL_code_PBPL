@@ -7,14 +7,14 @@ param.ku = 2.*pi./param.lambdau;                            % undulator wavenumb
 lwig=param.lambdau*2e3;                                     % Undulator length m    
 % Tapering options
 param.tapering = 1;                                         % tapering (0 no tapering ; 1 decelation)    
-param.z0 = param.lambdau*10;
-param.psir = 10*pi/180;
+param.z0 = param.lambdau*2;
+param.psir = 20*pi/180;
 %% Simulation control options
-param.phasespacemovie=1;
+param.phasespacemovie=0;
 param.itdp = 0;
 param.saveoutput=1;
 % Set simulation length and # of snapshots
-param.delz=10;
+param.delz=2;
 param.stepsize = param.lambdau*param.delz;
 param.Nsnap = round(lwig/param.stepsize);                    % number of snapshots to take over the length of the undulator
 param.shotnoise = 1;

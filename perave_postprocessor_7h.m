@@ -220,7 +220,6 @@ for i=1:length(zindices)
         %sepamin=(gammarofz(zindices(i))-param.gamma0)/param.gamma0-bucketheight(zindices(i))'.*separatrix(linspace(-pi,pi,1e4),res_phase(zindices(i)));
         sepa=bucketheight(zindices(i))'.*separatrix(x,res_phase(zindices(i)))+(gammarofz(zindices(i))-param.gamma0)/param.gamma0;
         sepamin=(gammarofz(zindices(i))-param.gamma0)/param.gamma0-bucketheight(zindices(i))'.*separatrix(x,res_phase(zindices(i)));
-
     else
 sepa=bucketheight(zindices(i))'.*separatrix(x,res_phase(zindices(i)));
 sepamin=-bucketheight(zindices(i))'.*separatrix(x,res_phase(zindices(i)));
@@ -232,7 +231,8 @@ gp=squeeze(gammap(zindices(i),:,:));
 tresh=reshape(tp,[1,size(tp,1)*size(tp,2)]);gresh=reshape(gp,[1,size(gp,1)*size(gp,2)]);
 %tresh=squeeze(thetap(zindices(i),param.Nsnap/2,:));gresh=squeeze(gammap(zindices(i),param.Nsnap/2,:));
 %CALCULATE THE TRAPPING FRACTION
-[psi1,psi2]=bucket_parameters(param.psir);
+%[psi1,psi2]=bucket_parameters(param.psir);% This is for const res phase
+[psi1,psi2]=bucket_parameters(res_phase(zindices(i)));% This is for the general case
 indi=(mod(tp,2*pi)-pi)>psi2 & (mod(tp,2*pi)-pi)<psi1;
 g2=(gp(indi)./(meanenergy(1))-1);
 %g2=(gp(indi)./(param.gamma0)-1);% This is ~ the same as the above line
@@ -246,8 +246,10 @@ if param.itdp
 plot((mod(tresh,2*pi)-pi)./pi,(gresh./(meanenergy(1))-1)*100,'*k','MarkerSize',1)
 else     
     subplot(1,2,1)
-    semilogy([1:zindices(i)]*param.stepsize/Lgain,power(1:zindices(i))/param.Ee/param.I,'k')
+    semilogy([1:zindices(i)]*param.stepsize/Lgain,power(1:zindices(i))/param.Ee/param.I,'k')    
     xlim([0,lwig]./Lgain);ylim([min(power),2*max(power)]./param.Ee/param.I)
+    %plot([1:zindices(i)]*param.stepsize/Lgain,power(1:zindices(i))/param.Ee/param.I,'k')
+    %xlim([0,lwig]./Lgain);ylim([min(power),1.1*max(power)]./param.Ee/param.I)
     xlabel('z/L_g');ylabel('P/P_{beam}')
     set(gca,'YTick',logspace(-4,-1,4))
     enhance_plot('Times',20)
@@ -258,21 +260,25 @@ else
     % Without the separatrix
     %plot((mod(tp,2*pi)-pi)./pi,(gp./(meanenergy(1))-1),'.k','MarkerSize',1)        
     plot((mod(tp,2*pi)-pi)./pi,(gp./(meanenergy(1))-1)*100,'.k',x(ind)/pi,sepa(ind)*100,'r',x(ind)/pi,sepamin(ind)*100,'r','LineWidth',2)
+    set(gca,'FontSize',20)
+    xlabel('\Psi/pi');ylabel('\Delta \gamma/\gamma_0');%enhance_plot('FontSize',16)
     drawnow
 end
 xlim([-1,1])
 set(gca,'FontSize',20)
 xlabel('\Psi/pi');ylabel('\Delta \gamma/\gamma_0');%enhance_plot('FontSize',16)
 % If you want to save to GIF
-%       drawnow
-%       frame = getframe(10);
-%       im = frame2im(frame);
-%       [imind,cm] = rgb2ind(im,256);
-%       if i == 1;
-%           imwrite(imind,cm,filename,'gif', 'Loopcount',inf);
-%       else
-%           imwrite(imind,cm,filename,'gif','WriteMode','append');
-%       end
+%{
+      drawnow
+      frame = getframe(10);
+      im = frame2im(frame);
+      [imind,cm] = rgb2ind(im,256);
+      if i == 1;
+          imwrite(imind,cm,filename,'gif', 'Loopcount',inf);
+      else
+          imwrite(imind,cm,filename,'gif','WriteMode','append');
+      end
+%}
 end
 figure(2)
 subplot(2,3,5)
