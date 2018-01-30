@@ -190,7 +190,7 @@ plot([1:1:size(radfield,2)]*param.zsep*param.lambda0*1e15/3e8,psirend*180/pi)
 xlim([1,size(radfield,2)]*param.zsep*param.lambda0*1e15/3e8)
 xlabel('t [fs]');ylabel('\Psi_R [degree]');enhance_plot;
 else
-    area = sqrt(meanfield.*Kz').*(1-sin(psr))./(1+sin(psr));
+    area = sqrt(abs(meanfield).*Kz').*(1-sin(psir))./(1+sin(psir));
 subplot(2,3,4)
 plot(zoverlg,area./area(1))
 xlim([0,zoverlg(end)])
