@@ -168,6 +168,8 @@ annotation('textbox', [0 0.9 1 0.1], ...
 set(gcf, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
 subplot(2,3,1)
 plot(zoverlg,psir*180/pi)
+%hold on
+%plot(zoverlg,res_phase*180/pi,'r--')% If you want to compare the computed resonant phase with the real one fed to the code
 xlabel('z/L_g');ylabel('\Psi_R [degree]');enhance_plot;xlim([0,zoverlg(end)])
 subplot(2,3,2)
 plot(zoverlg,abs(meanfield)*1e-12)
@@ -254,7 +256,7 @@ else
     set(gca,'YTick',logspace(-4,-1,4))
     enhance_plot('Times',20)
     hold on
-    legend(['z/L_u = ',num2str(zlocations(i)/lwig)],'location','SouthEast')
+    legend(['z/L_u = ',num2str(zlocations(i)/lwig,'%.2f')],'location','SouthEast')
     legend boxoff
     subplot(1,2,2)
     % Without the separatrix

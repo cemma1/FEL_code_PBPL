@@ -45,19 +45,19 @@ end
      % Compute undulator field at next step (constant res phase)     
      %       Kz(ij+1)=Kz(ij)-param.stepsize/const_resp*mean(abs(radfield(ij,:)),2).*sin(res_phase(ij));  
      
-     % Compute res phase at next step to preserve bucket area   
-     
-            if ij>floor(param.Nsnap/10)
-                psvals = linspace(eps,pi/2-eps,100);
+     % Compute res phase at next step to preserve bucket area                    
+            if ij>1 % Choose the start point of the constant area taper 
+                psvals = linspace(eps,pi/2-eps,100);                
                 for nn=1:length(psvals)
                     Kzguess(nn)=Kz(ij)-param.stepsize/const_resp*mean(abs(radfield(ij,:)),2).*sin(psvals(nn));                                          
                     alpha2 = (1-sin(psvals(nn)))/(1+sin(psvals(nn)));                    
                     Area2(nn) = alpha2.*sqrt((mean(abs(radfield(ij+1,:)).*Kzguess(nn))));                                        
-                    areaconst(nn) = (abs((Area2(nn)-Area1)))/Area1;                     
+                    areaconst(nn) = (abs((Area2(nn)-1*Area1)))/Area1;% For constant changes to bucket area                     
+                    %areaconst(nn)=(abs((Area2(nn)-(1-(ij-z0)/(10*param.Nsnap))*Area1)))/Area1; % For variable changes to bucket area z0 is the start point of const area taper
                 end
 
                 [mina,ind]=min(abs(areaconst));
-                res_phase(ij+1)=psvals(ind);% Sets the psir value to that which keeps the area constant
+                res_phase(ij+1)=psvals(ind);% Sets the psir value to that which keeps the area constant                
                 Kz(ij+1)=Kzguess(ind);% Sets the K value to that which keeps the area constant
                     %{ 
                 figure% Some diagnostics for the constant-area code in case it breaks for some reason                
