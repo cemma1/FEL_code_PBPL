@@ -164,12 +164,18 @@ figure(3);
 annotation('textbox', [0 0.9 1 0.1], ...
     'String', 'Tapering Plots', ...
     'EdgeColor', 'none', ...
-    'HorizontalAlignment', 'center','FontSize',30)
+    'HorizontalAlignment', 'center','FontSize',30,'Fontname','Times')
 set(gcf, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
+c1 = -1.899;
+c2 = 0.5736;
+c3 = 0.222;
+chengyingfit = pi/2+c1+c2*atan(exp(c3*2*param.ku*rho1D.*zpos))+param.psir;
 subplot(2,3,1)
 plot(zoverlg,psir*180/pi)
-%hold on
-%plot(zoverlg,res_phase*180/pi,'r--')% If you want to compare the computed resonant phase with the real one fed to the code
+hold on
+plot(zoverlg,chengyingfit.*180/pi,'r--')
+%legend('Simulation','CY fit'); legend boxoff
+%plot(zoverlg,res_phase*180/pi,'r--')% To compare the computed resonant phase with the real one fed to the code, they should be the same
 xlabel('z/L_g');ylabel('\Psi_R [degree]');enhance_plot;xlim([0,zoverlg(end)])
 subplot(2,3,2)
 plot(zoverlg,abs(meanfield)*1e-12)
@@ -289,6 +295,11 @@ xlabel('z/\lambda_u');ylabel('f_t [Calculated]');
 %legend(sprintf(['f_t [Theory]=',num2str((psi1-psi2)/2/pi)]))
 enhance_plot
 end
+%%
+figure(50)
+plot(zoverlg,psir*180/pi)
+hold on
+plot(zoverlg,chengyingfit.*180/pi,'r--');xlabel('z/L_g');ylabel('\Psi_R [degree]');enhance_plot;xlim([0,zoverlg(end)])
 %% Functions to calculate bucket parameters and fit the gain length
 
 function [ sep ] = separatrix( psi,psir )
@@ -347,3 +358,4 @@ function [power_spectrum,omega,sigma]=spectrum_calc(field,xlamds,zsep)
     %Center the spectrum so you have delta omega/omega on x-axis
     omega=omega-1; 
 end
+

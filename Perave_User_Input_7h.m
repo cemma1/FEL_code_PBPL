@@ -8,10 +8,10 @@ lwig=param.lambdau*1e3;                                     % Undulator length m
 % Tapering options
 param.tapering = 1;                                         % tapering (0 no tapering ; 1 decelation)    
 param.z0 = param.lambdau*2;
-param.psir = 20*pi/180;
+param.psir = 10*pi/180;
 %param.psir = psirvalues(psirindex);% For scanning
 %% Simulation control options
-param.phasespacemovie=0;
+param.phasespacemovie=1;
 param.itdp = 0;
 param.saveoutput=1;
 % Set simulation length and # of snapshots
@@ -29,7 +29,7 @@ end
 %% radiation parameters
 param.lambda0 = 1.2424*1e-9;                                    % Seed wavelength
 param.k = 2*pi/param.lambda0;                                 % wavenumber in free space
-P0 = 1e11; param.P0=P0;                                        % Seed power (W) 
+P0 = 5.94e10/1.6; param.P0=P0;                                        % Seed power (W) 
 zr = 5;                                                       % Rayleigh length of seed
 param.waist = sqrt(zr*param.lambda0/pi);
 A_mode = pi*param.waist^2/2;
