@@ -46,7 +46,7 @@ end
      %       Kz(ij+1)=Kz(ij)-param.stepsize/const_resp*mean(abs(radfield(ij,:)),2).*sin(res_phase(ij));  
      
      % Compute res phase at next step to preserve bucket area                    
-            if ij>1 % Choose the start point of the constant area taper 
+            if ij>2 % Choose the start point of the constant area taper 
                 psvals = linspace(eps,pi/2-eps,100);                
                 for nn=1:length(psvals)
                     Kzguess(nn)=Kz(ij)-param.stepsize/const_resp*mean(abs(radfield(ij,:)),2).*sin(psvals(nn));                                          

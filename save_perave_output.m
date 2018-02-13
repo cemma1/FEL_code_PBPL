@@ -4,6 +4,7 @@
 dirname = 'Simulation_output/';
 system(['mkdir ',dirname]);
 save([dirname,'/simulation_parameters'],'param')
+save([dirname,'/resonant_phase'],'res_phase')
 averagepower=mean(power,2);save([dirname,'/averagepower'],'averagepower')
 save([dirname,'/average_bunching'],'bunch')
 %save([dirname,'/average_energy'],'meanenergy')

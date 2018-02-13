@@ -166,10 +166,11 @@ annotation('textbox', [0 0.9 1 0.1], ...
     'EdgeColor', 'none', ...
     'HorizontalAlignment', 'center','FontSize',30,'Fontname','Times')
 set(gcf, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
-c1 = -1.899;
-c2 = 0.5736;
-c3 = 0.222;
-chengyingfit = pi/2+c1+c2*atan(exp(c3*2*param.ku*rho1D.*zpos))+param.psir;
+c1 = -1.016;
+c2 = -0.392;
+c3 = 4.005;
+c4 = -0.1205;
+chengyingfit = pi/2+c1+c2*atan(c3*exp(c4*2*param.ku*rho1D.*zpos));
 subplot(2,3,1)
 plot(zoverlg,psir*180/pi)
 hold on
@@ -200,7 +201,7 @@ xlabel('t [fs]');ylabel('\Psi_R [degree]');enhance_plot;
 else
     area = sqrt(abs(meanfield).*Kz').*(1-sin(psir))./(1+sin(psir));
 subplot(2,3,4)
-plot(zoverlg,area./area(1))
+plot(zoverlg,area./area(2))
 xlim([0,zoverlg(end)])
 xlabel('z/L_g');ylabel('Bucket Area [arb. units]');enhance_plot;    
 end
