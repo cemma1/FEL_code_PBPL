@@ -8,8 +8,8 @@ lwig=param.lambdau*1e3;                                     % Undulator length m
 % Tapering options
 param.tapering = 1;                                         % tapering (0 no tapering ; 1 decelation)    
 param.z0 = param.lambdau*2;
-%param.psir = 40*pi/180;
-param.psir = psirvalues(psirindex);% For scanning
+param.psir = 30*pi/180;
+%param.psir = psirvalues(psirindex);% For scanning
 %% Simulation control options
 param.phasespacemovie=1;
 param.itdp = 0;
@@ -41,7 +41,7 @@ param.Ee = param.gamma0*me*c^2/e0;                            % Total e-beam ene
 energyspread = 1.5475;                                           % Absolute energy spread MeV
 param.deltagammarel = energyspread/param.gamma0/0.511;        % Relative energy spread dgamma/gamma
 param.deltagamma = param.gamma0*param.deltagammarel;
-param.prebunching = 1;                                        % set to 1 to start from a pre-bunched beam. 
+param.prebunching = 0;                                        % set to 1 to start from a pre-bunched beam. 
 if param.prebunching
 param.Abh = 20;                                               % Initial bunching modulation amplitude
 param.bunchphase = param.psir;                                % Initial bunching phase
