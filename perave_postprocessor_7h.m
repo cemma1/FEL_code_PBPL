@@ -45,7 +45,8 @@ figure(2);
 set(gcf, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
 title('Simulation Output')
 subplot(2,3,1)
-semilogy(zpos./Lgain,mean(power,2)/param.Ee/param.I)
+%semilogy(zpos./Lgain,mean(power,2)/param.Ee/param.I)
+plot(zpos./Lgain,mean(power,2)/param.Ee/param.I)
 hold on
 % if ~param.itdp
 % Lgfit=gainlength_fit(Lgain,zpos,mean(power,2));
@@ -54,7 +55,7 @@ xlim([0,zpos(end)]/Lgain)
 %semilogy(ij*param.stepsize,mean(power3,2),'r')
 xlabel('z/L_g')
 ylabel('P/P_{beam}')
-legend(['P_{max}=',num2str(max(mean(power,2)*1e-12),'%.2f'),'TW'],'location','SouthEast'); legend boxoff
+legend(['\eta_{max}=',num2str(max(mean(power,2)/param.Ee/param.I*100),'%.2f'),'%'],'location','NorthWest'); legend boxoff
 enhance_plot
 if param.itdp
 subplot(2,3,2)

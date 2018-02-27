@@ -45,8 +45,9 @@ end
      % Compute undulator field at next step (constant res phase)     
      %       Kz(ij+1)=Kz(ij)-param.stepsize/const_resp*mean(abs(radfield(ij,:)),2).*sin(res_phase(ij));  
      
-     % Compute res phase at next step to preserve bucket area                    
-            if ij>2 % Choose the start point of the constant area taper 
+     % Compute res phase at next step to preserve bucket area  
+            if constareataper
+                if ij>2 % Choose the start point of the constant area taper (in units of integration steps)
                 psvals = linspace(eps,pi/2-eps,100);                
                 for nn=1:length(psvals)
                     Kzguess(nn)=Kz(ij)-param.stepsize/const_resp*mean(abs(radfield(ij,:)),2).*sin(psvals(nn));                                          
@@ -79,10 +80,14 @@ end
                 Kz(ij+1)=Kz(ij)-param.stepsize/const_resp*mean(abs(radfield(ij,:)),2).*sin(res_phase(ij));  
                 alpha1 = (1-sin(res_phase(ij)))/(1+sin(res_phase(ij)));
                 Area1 = alpha1*sqrt((mean(abs(radfield(ij,:)).*Kz(ij))));
+                end
             end
-     
+            if lineartaper % Here add the increasing psir taper
+                res_phase(ij+1)=res_phase(ij)+psirgradient*param.stepsize;
+                Kz(ij+1)=Kz(ij)-param.stepsize/const_resp*mean(abs(radfield(ij,:)),2).*sin(res_phase(ij));  
+            end
         end
-end                    
+end
 
      % Remove slices within one total slippage length
  if(param.itdp)

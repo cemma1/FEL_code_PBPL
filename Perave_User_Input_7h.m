@@ -7,11 +7,14 @@ param.ku = 2.*pi./param.lambdau;                            % undulator wavenumb
 lwig=param.lambdau*1e3;                                     % Undulator length m    
 % Tapering options
 param.tapering = 1;                                         % tapering (0 no tapering ; 1 decelation)    
-param.z0 = param.lambdau*2;
-param.psir = 30*pi/180;
+param.z0 = param.lambdau;
+param.psir = 20*pi/180;
+constareataper = 0;
+lineartaper = 1;
+psirgradient = 20*1/lwig*pi/180;
 %param.psir = psirvalues(psirindex);% For scanning
 %% Simulation control options
-param.phasespacemovie=1;
+param.phasespacemovie=0;
 param.itdp = 0;
 param.saveoutput=1;
 % Set simulation length and # of snapshots
