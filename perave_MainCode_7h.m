@@ -5,7 +5,7 @@ close all
 %% Load physical constants
 physical_constants        
 %% Load the User Determined initial conditions
-Perave_User_Input_7h 
+Perave_User_Input_7h
 %% Calculate 1-D FEL parameters
 calculate_FEL_parameters
 %% Compute the undulator field
