@@ -7,18 +7,19 @@ param.ku = 2.*pi./param.lambdau;                            % undulator wavenumb
 lwig=param.lambdau*1e3;                                     % Undulator length m    
 % Tapering options
 param.tapering = 1;                                         % tapering (0 no tapering ; 1 decelation)    
-param.z0 = param.lambdau;
-param.psir = 20*pi/180;
-constareataper = 0;
-lineartaper = 1;
-psirgradient = 20*1/lwig*pi/180;
+param.z0 = param.lambdau*300;
+param.psir = 10*pi/180;
+kmrtaper = 0;
+constareataper = 1;
+lineartaper = 0;
+psirgradient = 27*1/lwig*pi/180;
 %param.psir = psirvalues(psirindex);% For scanning
 %% Simulation control options
-param.phasespacemovie=0;
+param.phasespacemovie=1;
 param.itdp = 0;
 param.saveoutput=1;
 % Set simulation length and # of snapshots
-param.delz=1;
+param.delz=4;   
 param.stepsize = param.lambdau*param.delz;
 param.Nsnap = round(lwig/param.stepsize);                    % number of snapshots to take over the length of the undulator
 param.shotnoise = 1;
@@ -27,12 +28,13 @@ if(~param.itdp)
     param.nslices = 1;
     param.shotnoise =1;   % Note if you want to model time independent start-up from noise set P0 = pnoise
 else
-    param.nslices = round(8*param.Nsnap);                    % Note you want more than 1 slippage length (Nsnap)
+    param.nslices = round(4*param.Nsnap);                    % Note you want more than 1 slippage length (Nsnap)
 end
 %% radiation parameters
 param.lambda0 = 1.2424*1e-9;                                    % Seed wavelength
 param.k = 2*pi/param.lambda0;                                 % wavenumber in free space
-P0 = 5.94e10/1.6; param.P0=P0;                                        % Seed power (W) 
+%P0 = 5.94e10/1.6; param.P0=P0;                                        % Seed power (W) 
+P0 = 2.2826e5; param.P0=P0;                                        % Seed power (W) 
 zr = 5;                                                       % Rayleigh length of seed
 param.waist = sqrt(zr*param.lambda0/pi);
 A_mode = pi*param.waist^2/2;

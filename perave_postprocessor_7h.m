@@ -38,6 +38,7 @@ end
 %% Radiation Power and spectrum at exit
 %power3(:,:) = abs(radfield_3rd(:,:)).^2/377*param.A_e;
 zpos= [1:param.Nsnap]*param.stepsize;
+zoverlg=zpos./Lgain;
 % if ~param.itdp
 % Lgfit=fit_gainlength(Lgain,zpos,mean(power,2));
 % end
@@ -110,7 +111,7 @@ enhance_plot
     
 % Sideband Stuff (for seeded FEL)
 if param.itdp
-figure
+figure(22)
 semilogy(zlocations,fundpower,'r')
 hold on
 semilogy(zlocations,1-fundpower,'b')
@@ -159,7 +160,6 @@ figure(2)
    ylabel('\lambda_{synch} [m] ','FontSize',12)
    enhance_plot
 %% Tapering Plots
-zoverlg=zpos./Lgain;
 
 figure(3);
 annotation('textbox', [0 0.9 1 0.1], ...
@@ -199,6 +199,11 @@ subplot(2,3,4)
 plot([1:1:size(radfield,2)]*param.zsep*param.lambda0*1e15/3e8,psirend*180/pi)
 xlim([1,size(radfield,2)]*param.zsep*param.lambda0*1e15/3e8)
 xlabel('t [fs]');ylabel('\Psi_R [degree]');enhance_plot;
+area = sqrt(abs(meanfield).*Kz').*(1-sin(psir))./(1+sin(psir));
+subplot(2,3,5)
+plot(zoverlg,area./area(2))
+xlim([0,zoverlg(end)])
+xlabel('z/L_g');ylabel('Bucket Area [arb. units]');enhance_plot; 
 else
     area = sqrt(abs(meanfield).*Kz').*(1-sin(psir))./(1+sin(psir));
 subplot(2,3,4)
@@ -278,17 +283,17 @@ xlim([-1,1])
 set(gca,'FontSize',20)
 xlabel('\Psi/pi');ylabel('\Delta \gamma/\gamma_0');%enhance_plot('FontSize',16)
 % If you want to save to GIF
-%{
-      drawnow
-      frame = getframe(10);
-      im = frame2im(frame);
-      [imind,cm] = rgb2ind(im,256);
-      if i == 1;
-          imwrite(imind,cm,filename,'gif', 'Loopcount',inf);
-      else
-          imwrite(imind,cm,filename,'gif','WriteMode','append');
-      end
-%}
+
+%       drawnow
+%       frame = getframe(10);
+%       im = frame2im(frame);
+%       [imind,cm] = rgb2ind(im,256);
+%       if i == 1;
+%           imwrite(imind,cm,filename,'gif', 'Loopcount',inf);
+%       else
+%           imwrite(imind,cm,filename,'gif','WriteMode','append');
+%       end
+
 end
 figure(2)
 subplot(2,3,5)
@@ -298,10 +303,12 @@ xlabel('z/\lambda_u');ylabel('f_t [Calculated]');
 enhance_plot
 end
 %%
+if param.tapering
 figure(50)
-plot(zoverlg,psir*180/pi)
+plot(zoverlg,res_phase*180/pi)
 hold on
 plot(zoverlg,chengyingfit.*180/pi,'r--');xlabel('z/L_g');ylabel('\Psi_R [degree]');enhance_plot;xlim([0,zoverlg(end)])
+end
 %% Functions to calculate bucket parameters and fit the gain length
 
 function [ sep ] = separatrix( psi,psir )
