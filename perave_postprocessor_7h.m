@@ -6,7 +6,7 @@ hbar=6.582e-16;
 zlocations=linspace(param.stepsize,lwig,30);fundpower=[];sidebandpower=[];
 zindices=round(zlocations/param.stepsize);
 if param.itdp
-omegamin=-5e-3;omegamax=5e-3;
+omegamin=-7e-3;omegamax=7e-3;
 h=figure(1);
 %set(h, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
 
