@@ -10,7 +10,7 @@ for ij = 1:param.Nsnap-1  % takes Nsnap snapshots along length of undulator
     for islice = firstslice:param.nslices       
             % RK4th order integration     
      [phasespacenew,radfield(ij+1,islice)]=...
-         push_FEL_particles_RK4([squeeze(thetap(ij,islice,:)),squeeze(gammap(ij,islice,:))],radfield(ij,islice),param,Kz(ij));       
+         push_FEL_particles_RK4([squeeze(thetap(ij,islice,:)),squeeze(gammap(ij,islice,:))],radfield(ij,islice),param,Kz(ij),islice);       
      thetap(ij+1,islice,:) = phasespacenew(:,1);
      gammap(ij+1,islice,:) = phasespacenew(:,2);     
     end
@@ -83,7 +83,7 @@ end
         for ij = 1:param.Nsnap-1  % takes Nsnap snapshots along length of undulator
     % RK4th order integration                     
      [phasespacenew,radfield(ij+1,1)]=...
-         push_FEL_particles_RK4([squeeze(thetap(ij,1,:)),squeeze(gammap(ij,1,:))],radfield(ij,1),param,Kz(ij));       
+         push_FEL_particles_RK4([squeeze(thetap(ij,1,:)),squeeze(gammap(ij,1,:))],radfield(ij,1),param,Kz(ij),1);       
      thetap(ij+1,1,:) = phasespacenew(:,1);
      gammap(ij+1,1,:) = phasespacenew(:,2);
               

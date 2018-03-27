@@ -6,7 +6,9 @@ hbar=6.582e-16;
 zlocations=linspace(param.stepsize,lwig,30);fundpower=[];sidebandpower=[];
 zindices=round(zlocations/param.stepsize);
 if param.itdp
-omegamin=-7e-3;omegamax=7e-3;
+    dt = param.zsep*param.lambda0/c;
+    tposition = [1:size(power,2)]*dt*1e15;
+omegamin=-7e-3;omegamax=7e-3; % For sideband filtering 
 h=figure(1);
 %set(h, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
 
@@ -27,13 +29,24 @@ xlabel('\delta\omega/\omega ','FontSize',16)
     legend(sprintf(['z / L_u =',num2str(zlocations(n)/lwig)]));
     
 subplot(1,2,2)
-plot([1:1:size(power,2)]*param.zsep*param.lambda0*1e15/3e8,power(zindices(n),:))
-xlim([1,size(power,2)]*param.zsep*param.lambda0*1e15/3e8)
+tailslice = param.Nsnap+1;
+if param.currprofile
+    yyaxis left
+    plot(tposition,power(zindices(n),:))
+    ylabel('Output Radiation Power [W]','FontSize',16)
+    yyaxis right
+    plot(tposition,param.Iprofile(tailslice:end).*1e-3)
+    ylabel('Current [kA]','FontSize',16)
+else
+ plot(tposition,power(zindices(n),:))   
+ ylabel('Output Radiation Power [W]','FontSize',16)
+end    
+xlim([0,tposition(end)])
 xlabel('t [fs]','FontSize',16)
-ylabel('Output Radiation Power [W]','FontSize',16)
 set(gca,'FontSize',16)
 drawnow
 end
+
 end
 %% Radiation Power and spectrum at exit
 %power3(:,:) = abs(radfield_3rd(:,:)).^2/377*param.A_e;
@@ -60,8 +73,8 @@ legend(['\eta_{max}=',num2str(max(mean(power,2)/param.Ee/param.I*100),'%.2f'),'%
 enhance_plot
 if param.itdp
 subplot(2,3,2)
-plot([1:1:size(power,2)]*param.zsep*param.lambda0*1e15/3e8,power(end,:))
-xlim([1,size(power,2)]*param.zsep*param.lambda0*1e15/3e8)
+plot(tposition,power(end,:))
+xlim([0,tposition(end)])
 xlabel('t [fs]')
 ylabel('Power [W]')
 tcoh=sqrt(10*pi)/3/rho1D*param.lambda0/2/pi/3e8;
@@ -94,7 +107,7 @@ end
 
 figure(2)
 subplot(2,3,4)
-plot([1:1:param.Nsnap-1]*param.stepsize/Lgain,bunch)
+plot([1:param.Nsnap-1]*param.stepsize/Lgain,bunch)
 xlim([0,param.Nsnap*param.stepsize]/Lgain)
 xlabel('z/L_g')
 ylabel('Bunching Factor')
@@ -124,8 +137,6 @@ end
 
 %% Tapering plots 
 if param.tapering
-const_resp=1/param.chi2*(param.lambdau/2/param.lambda0);
-
 meanfield=mean(radfield(:,:),2);
 dKdz=zeros(param.Nsnap,1);
 dKdz(2:end)=abs(diff(Kz)./param.delz./param.lambdau);
@@ -159,7 +170,7 @@ figure(2)
    xlabel('z/L_g','FontSize',12)
    ylabel('\lambda_{synch} [m] ','FontSize',12)
    enhance_plot
-%% Tapering Plots
+%% Tapering Plots cont'd
 
 figure(3);
 annotation('textbox', [0 0.9 1 0.1], ...
@@ -196,8 +207,8 @@ xlabel('z/L_g');ylabel('d\gamma_r/dz [MeV/m]');enhance_plot;xlim([0,zoverlg(end)
 %legend('f_b','\alpha')
 if param.itdp
 subplot(2,3,4)
-plot([1:1:size(radfield,2)]*param.zsep*param.lambda0*1e15/3e8,psirend*180/pi)
-xlim([1,size(radfield,2)]*param.zsep*param.lambda0*1e15/3e8)
+plot(tposition,psirend*180/pi)
+xlim([0,tposition(end)])
 xlabel('t [fs]');ylabel('\Psi_R [degree]');enhance_plot;
 area = sqrt(abs(meanfield).*Kz').*(1-sin(psir))./(1+sin(psir));
 subplot(2,3,5)
@@ -215,6 +226,26 @@ subplot(2,3,6)
 plot(zoverlg,Kz)
 xlabel('z/L_g');ylabel('Undulator K (rms)');enhance_plot;xlim([0,zoverlg(end)])
 end
+%% Optical Guiding plots
+%{
+realpartn = param.chi1.*Kz./gammarofz./param.k./abs(meanfield').*cos(res_phase);
+imagpartn = param.chi1.*Kz./gammarofz/param.k./abs(meanfield').*sin(res_phase);
+n = param.chi1.*Kz./gammarofz./param.k./abs(meanfield').*exp(1i.*res_phase);
+
+Vsquared = param.k^2*param.sigmax^2.*(n.^2-1);
+
+
+figure
+subplot(2,1,1)
+semilogy(zoverlg,abs(n))
+hold on
+semilogy(zoverlg,realpartn,'r')
+hold on
+semilogy(zoverlg,imagpartn,'k')
+legend('abs(n)-1','Re(n)-1','Im(n)');
+subplot(2,1,2)
+semilogy(zoverlg,abs(Vsquared))
+%}
 %% Phasespace movie
 zlocations=linspace(param.stepsize,lwig,50);
 zindices=round(zlocations/param.stepsize);

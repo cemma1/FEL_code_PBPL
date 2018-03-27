@@ -1,4 +1,4 @@
-function [newphasespace,newevalue]=push_FEL_particles_RK4(phasespace,evalue,param,kvalue)
+function [newphasespace,newevalue]=push_FEL_particles_RK4(phasespace,evalue,param,kvalue,islice)
    
 gammar_sq=param.lambdau/(2*param.lambda0)*(1+kvalue^2);
 
@@ -25,9 +25,9 @@ newphasespace(:,2)=phasespace(:,2)+1/6*(k1gamma+2*k2gamma+2*k3gamma+k4gamma);
 
 % Predictor-Corrector method for the field
 
-f1=param.chi1*kvalue*...
+f1=param.chi1(islice)*kvalue*...
      mean(exp(-1i*phasespace(:,1))./phasespace(:,2));
-f1star=param.chi1*kvalue*...
+f1star=param.chi1(islice)*kvalue*...
      mean(exp(-1i*newphasespace(:,1))./newphasespace(:,2));
 
 newevalue=evalue-param.stepsize/2.*(f1+f1star);
