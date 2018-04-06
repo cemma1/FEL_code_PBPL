@@ -1,7 +1,7 @@
 %save_perave_output
 
 %dirname=['Psir_',num2str(psirvalues(psirindex)),'/'];
-dirname = 'Simulation_output/';
+dirname = 'Simulation_output';
 system(['mkdir ',dirname]);
 save([dirname,'/simulation_parameters'],'param')
 save([dirname,'/resonant_phase'],'res_phase')

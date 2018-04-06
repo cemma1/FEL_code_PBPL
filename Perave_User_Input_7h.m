@@ -6,11 +6,11 @@ param.K = 3; %e0*Bfield*/me/c/ku;                       % RMS undulator paramete
 param.ku = 2.*pi./param.lambdau;                            % undulator wavenumber
 lwig=param.lambdau*0.5e3;                                     % Undulator length m    
 % Tapering options
-param.tapering = 0;                                         % tapering (0 no tapering ; 1 decelation)    
+param.tapering = 1;                                         % tapering (0 no tapering ; 1 decelation)    
 param.z0 = param.lambdau*100*2;
-param.psir = 5*pi/180;
-kmrtaper = 1;
-constareataper = 0;
+param.psir = 10*pi/180;
+kmrtaper = 0;
+constareataper = 1;
 lineartaper = 0;
 psirgradient = 27*1/lwig*pi/180;                % 0 by default, only matters if lineartaper =1
 %param.psir = psirvalues(psirindex);% For scanning
@@ -38,7 +38,10 @@ P0 = 2.2826e3; param.P0=P0;                                   % Seed power (W)
 zr = 5;                                                       % Rayleigh length of seed
 param.waist = sqrt(zr*param.lambda0/pi);
 A_mode = pi*param.waist^2/2;
-param.E0 = sqrt(2*P0/c/eps0/A_mode/2);                        % Assume circular polarization  
+param.E0 = sqrt(2*P0/c/eps0/A_mode/2);                        % Assume circular polarization
+% To include a non-uniform seed field distribution 
+param.fieldprofile = 0;                                       % 0 = uniform current profile 1 = gaussian
+param.sigmatfield = 100e-18;                                  % beam sigma [s], only for param.currprofile =1
 %% Electron beam parameters
 param.gamma0 = sqrt(param.k/2/param.ku*(1+param.K^2));        % relativistic gamma factor
 param.Np = 1024;                                              % # of macroparticles (500-1000 well) 
@@ -61,18 +64,9 @@ param.sigmax = sqrt(betax*emitx/param.gamma0);                % beam radius
 param.A_e = 2*pi*param.sigmax^2;                              % beam cross section 
 bunchlength=param.nslices*param.zsep*param.lambda0/c;
 % To include a non-uniform current distribution 
-param.currprofile = 1;                                        % 0 = uniform current profile 1 = gaussian
-param.sigmat = 500e-18;                                       % beam sigma [s], only for param.currprofile =1
-
-if param.currprofile
-    dt = param.zsep*param.lambda0/c;
-    tvector = [1:param.nslices].*dt-round(param.nslices/2).*dt;
-    param.Iprofile = param.I.*exp(-tvector.^2/2/param.sigmat^2);
-else
-    param.Iprofile = param.I.*ones(1,param.nslices);
-end
+param.currprofile = 0;                                        % 0 = uniform current profile 1 = gaussian
+param.sigmat = 500e-18;                                       % beam sigma [s], only for gaussian (param.currprofile =1)
 %% Simplifying constants
-    param.chi2 = e0/me/c^2;
-    param.chi1=mu0*c/2.*param.Iprofile./param.A_e;
+param.chi2 = e0/me/c^2;
 % Constant for the resonant phase calculation   
 const_resp=1/param.chi2*(param.lambdau/2/param.lambda0);

@@ -10,6 +10,8 @@ Perave_User_Input_7h
 calculate_FEL_parameters
 %% Compute the undulator field
 compute_undulator_field_v7h
+%% Initialize radiation field
+initialize_radiation_field_v7h
 %% Initialize particle distribution
 generate_perave_particles_v7h
 %% Run the main integration routine

@@ -1,3 +1,12 @@
+%% Initialize current profile if set in user input
+if param.currprofile
+    dt = param.zsep*param.lambda0/c;
+    tvector = [1:param.nslices].*dt-round((param.nslices+param.Nsnap)/2).*dt;
+    param.Iprofile = param.I.*exp(-tvector.^2/2/param.sigmat^2);    
+else
+    param.Iprofile = param.I.*ones(1,param.nslices);
+end
+param.chi1=mu0*c/2.*param.Iprofile./param.A_e; % Simplifying constant for current density
 %% initialize phase space (Quiet - start problem )
 tic
 disp('Loading particles ...');
@@ -6,7 +15,7 @@ mpart = param.Np/nbins;
 n_electron = param.I*param.lambda0*param.zsep/e0/c;
 p1 = zeros(param.Np,1);    
 
-radfield=param.E0*ones(param.Nsnap,param.nslices);
+%radfield=param.E0*ones(param.Nsnap,param.nslices);
 thetap = zeros(param.Nsnap,param.nslices,param.Np);
 gammap=zeros(param.Nsnap,param.nslices,param.Np);
 
