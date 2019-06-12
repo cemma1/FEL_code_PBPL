@@ -6,12 +6,12 @@ param.K = 2.475; %e0*Bfield*/me/c/ku;                       % RMS undulator para
 param.ku = 2.*pi./param.lambdau;                            % undulator wavenumber
 lwig=param.lambdau*1e3;                                     % Undulator length m    
 % Tapering options
-param.tapering = 1;                                         % tapering (0 no tapering ; 1 decelation)    
+param.tapering = 0;                                         % tapering (0 no tapering ; 1 decelation)    
 param.z0 = param.lambdau*10;
 param.psir = pi/4;
 %% Simulation control options
 param.phasespacemovie=1;
-param.itdp = 0;
+param.itdp = 1;
 param.saveoutput=1;
 % Set simulation length and # of snapshots
 param.delz=10;
@@ -23,12 +23,12 @@ if(~param.itdp)
     param.nslices = 1;
     param.shotnoise =0;   % Note if you want to model time independent start-up from noise set P0 = pnoise
 else
-    param.nslices = round(8*param.Nsnap);                    % Note you want more than 1 slippage length (Nsnap)
+    param.nslices = round(6*param.Nsnap);          % Num of slices: Note you want more than 1 slippage length Nsnap
 end
 %% radiation parameters
 param.lambda0 = 1.5*1e-10;                                    % Seed wavelength
 param.k = 2*pi/param.lambda0;                                 % wavenumber in free space
-P0 = 100; param.P0=P0;                                        % Seed power (W) 
+P0 = 1e4; param.P0=P0;                                        % Seed power (W) 
 zr = 5;                                                       % Rayleigh length of seed
 param.waist = sqrt(zr*param.lambda0/pi);
 A_mode = pi*param.waist^2/2;
@@ -42,11 +42,12 @@ param.deltagammarel = energyspread/param.gamma0/0.511;        % Relative energy 
 param.deltagamma = param.gamma0*param.deltagammarel;
 param.prebunching = 0;                                        % set to 1 to start from a pre-bunched beam. 
 if param.prebunching
-param.Abh = 20;                                               % Initial bunching modulation amplitude
-param.bunchphase = param.psir;                                % Initial bunching phase
-P0required=(param.Abh*param.deltagamma)^4*(0.511e6*param.ku/param.K/2)^2*A_mode/377; 
-param.P0=P0required;                                          % Set the seed power to the power required for pre-bunching
-param.E0 = sqrt(param.P0/c/eps0/A_mode);                      % Assume circular polarization
+    % Parameter definition in C. Emma et al PRAB 20, 110701 (2017)
+    param.Abh = 20;                                               % Initial bunching modulation amplitude
+    param.bunchphase = param.psir;                                % Initial bunching phase
+    P0required=(param.Abh*param.deltagamma)^4*(0.511e6*param.ku/param.K/2)^2*A_mode/377; 
+    param.P0=P0required;                                          % Set the seed power to the power required for pre-bunching
+    param.E0 = sqrt(param.P0/c/eps0/A_mode);                      % Assume circular polarization
 end
 betax=10;                                                     % Beta function
 emitx=0.4e-6;                                                 % Transverse emittance
