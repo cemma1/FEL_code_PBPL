@@ -11,7 +11,7 @@ param.z0 = param.lambdau*10;
 param.psir = pi/4;
 %% Simulation control options
 param.phasespacemovie=1;
-param.itdp = 1;
+param.itdp = 0;
 param.saveoutput=1;
 % Set simulation length and # of snapshots
 param.delz=10;

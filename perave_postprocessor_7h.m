@@ -218,8 +218,8 @@ for i=1:length(zindices)
     
     subplot(1,2,2)
     % Without the separatrix
-    %plot((mod(tp,2*pi)-pi)./pi,(gp./(meanenergy(1))-1),'.k','MarkerSize',1)        
-    plot((mod(tp,2*pi)-pi)./pi,(gp./(meanenergy(1))-1)*100,'.k',x(ind)/pi,sepa(ind)*100,'r--',x(ind)/pi,sepamin(ind)*100,'r--','LineWidth',2)
+    plot((mod(tp,2*pi)-pi)./pi,(gp./(meanenergy(1))-1),'.k','MarkerSize',1)        
+    %plot((mod(tp,2*pi)-pi)./pi,(gp./(meanenergy(1))-1)*100,'.k',x(ind)/pi,sepa(ind)*100,'r--',x(ind)/pi,sepamin(ind)*100,'r--','LineWidth',2)
     xlim([-1,1])
     set(gca,'FontSize',20,'FontName','Times')    
     xlabel('\Psi/pi');ylabel('\Delta \gamma/\gamma_0');%enhance_plot('FontSize',16)

@@ -1,7 +1,9 @@
-%%%% PBPL FEL simulation code %%%%
-%%% Input deck compatible with wafFEL, 1D period average, and GENESIS %%%
-clear all
-close all
+%%%% 1d FEL simulation code %%%%
+% Check for version compatibility
+if verLessThan('matlab','9.1')
+warning('Including functions in scripts requires MATLAB R2016b or later')
+warning('Functions defined inside perave_postprocessor script need to be defined as separate functions')
+end
 %% Load physical constants
 physical_constants        
 %% Load the User Determined initial conditions
