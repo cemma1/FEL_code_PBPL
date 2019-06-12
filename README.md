@@ -28,4 +28,7 @@ The plots below show typical results for a soft X-ray FEL run (1 nm). The (helic
 
 The power grows exponentially until the saturation power (Psat~Pbeam) is reached after roughly 20 gain lengths. The gain length from simulation is 51.75 cm, in good agreement with theoretical value of 51.51 cm. The average electron energy loss and energy spread at saturation are approximated given by the Pierce parameter.
 
+Note about version compatibility
 
+The script 'perave_postprocessor_7h.m' has some local functions defined within the script (separatrix,fit_gainlength,bucket_parameters,spectrum_calc).
+Including functions in scripts requires Matlab version 2016a or later. If you're running on a previous version of Matlab, cut and paste the code for those functions and define these functions in separate files. 
