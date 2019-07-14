@@ -34,7 +34,7 @@ end
 param.lambda0 = 1.2424*1e-9;                                  % Seed wavelength
 param.k = 2*pi/param.lambda0;                                 % wavenumber in free space
 %P0 = 5.94e10/1.6; param.P0=P0;                               % Seed power (W) 
-P0 = 2.2826e3; param.P0=P0;                                   % Seed power (W) 
+P0 = 2.2826e3*1e3; param.P0=P0;                                   % Seed power (W) 
 zr = 5;                                                       % Rayleigh length of seed
 param.waist = sqrt(zr*param.lambda0/pi);
 A_mode = pi*param.waist^2/2;

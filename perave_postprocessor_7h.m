@@ -1,10 +1,16 @@
 %perave_postprocessor
 close all
+set(groot, 'defaultTextInterpreter','tex')
 kw=2*pi/param.lambdau;
 hbar=6.582e-16;
+%% Field z vs s
+figure;imagesc(abs(radfield));set(gca,'YDir','normal')
+xlabel('s');ylabel('z');h1 = colorbar
+title(h1,'|E|');enhance_plot('FontSize',20)
+
 %% Spectrum as a function of z
 zlocations=linspace(param.stepsize,lwig,30);fundpower=[];sidebandpower=[];
-zindices=round(zlocations/param.stepsize);
+zidx=round(zlocations/param.stepsize);
 if param.itdp
     dt = param.zsep*param.lambda0/c;
     tposition = [1:size(power,2)]*dt*1e15;
@@ -12,8 +18,9 @@ omegamin=-7e-3;omegamax=7e-3; % For sideband filtering
 h=figure(1);
 %set(h, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
 
-for n=1:length(zindices)
-[powerspec,omega]=spectrum_calc(radfield(zindices(n),:),param.lambda0,param.zsep);
+for n=1:length(zidx)
+
+[powerspec,omega]=spectrum_calc(radfield(zidx(n),:),param.lambda0,param.zsep);
 sidebandindex=omega>omegamin & omega<omegamax;
 fundspectrum=powerspec(sidebandindex);
 fundpower(n)=trapz(fundspectrum)/trapz(powerspec);
@@ -32,21 +39,21 @@ subplot(1,2,2)
 tailslice = param.Nsnap+1;
 if param.currprofile
     yyaxis left
-    plot(tposition,power(zindices(n),:))
+    plot(tposition,power(zidx(n),:))
     ylabel('Output Radiation Power [W]','FontSize',16)
     yyaxis right
     plot(tposition,param.Iprofile(tailslice:end).*1e-3)
     ylabel('Current [kA]','FontSize',16)
 else
- plot(tposition,power(zindices(n),:))   
+ plot(tposition,power(zidx(n),:))   
  ylabel('Output Radiation Power [W]','FontSize',16)
 end    
 xlim([0,tposition(end)])
 xlabel('t [fs]','FontSize',16)
 set(gca,'FontSize',16)
 drawnow
-end
 
+end
 end
 %% Radiation Power and spectrum at exit
 %power3(:,:) = abs(radfield_3rd(:,:)).^2/377*param.A_e;
@@ -228,12 +235,11 @@ xlabel('z/L_g');ylabel('Undulator K (rms)');enhance_plot;xlim([0,zoverlg(end)])
 end
 %% Optical Guiding plots
 %{
-realpartn = param.chi1.*Kz./gammarofz./param.k./abs(meanfield').*cos(res_phase);
-imagpartn = param.chi1.*Kz./gammarofz/param.k./abs(meanfield').*sin(res_phase);
-n = param.chi1.*Kz./gammarofz./param.k./abs(meanfield').*exp(1i.*res_phase);
+realpartn = param.chi1(1).*Kz./gammarofz./param.k./abs(meanfield').*cos(res_phase);
+imagpartn = param.chi1(1).*Kz./gammarofz/param.k./abs(meanfield').*sin(res_phase);
+n = param.chi1(1).*Kz./gammarofz./param.k./abs(meanfield').*exp(1i.*res_phase);
 
 Vsquared = param.k^2*param.sigmax^2.*(n.^2-1);
-
 
 figure
 subplot(2,1,1)
@@ -246,9 +252,27 @@ legend('abs(n)-1','Re(n)-1','Im(n)');
 subplot(2,1,2)
 semilogy(zoverlg,abs(Vsquared))
 %}
+% Calculate the refractive index as a function of z and s
+for n=1:size(radfield,2)% Loop over each slice
+    % Calculate the refractive index as a function of z and s
+fieldangle(:,n)=unwrap(angle(radfield(:,n)));
+Re_n(:,n)= 1+gradient(fieldangle(:,n))/param.k;
+Im_n(:,n) = gradient(abs(radfield(:,n)))./abs(radfield(:,n))/param.k; 
+%{
+meanphase=mean(mean(squeeze(thetap(n,:,:)),2)+fieldangle(n,:),2)+pi/2;
+meanenergy=mean(squeeze(gammap(n,:,:)),2); 
+
+% Average energy and phase across arrays - assumes const current, otherwise
+% change param.chi1 to match the value for each slice
+Re_n(n,:)=1+param.chi1(1)./param.k*Kz(n)./abs(radfield(n,:)).*(cos(meanphase)./meanenergy)';
+Im_n(n,:)=param.chi1(1)./param.k*Kz(n)./abs(radfield(n,:)).*(sin(meanphase)./meanenergy)';
+%}
+end
+figure;
+subplot(1,2,1);surface(Re_n);shading interp;subplot(1,2,2);surface(Im_n);shading interp
 %% Phasespace movie
 zlocations=linspace(param.stepsize,lwig,50);
-zindices=round(zlocations/param.stepsize);
+zidx=round(zlocations/param.stepsize);
 if param.tapering
 bucketheight = sqrt(param.chi2/param.ku.*Kz./gammarofz.^2.*abs(mean(radfield(:,:),2))');
 else
@@ -259,31 +283,31 @@ if param.phasespacemovie
     filename='particle_movie.gif';
     figure(10);
     
-for i=1:length(zindices)    
+for i=1:length(zidx)    
     x=linspace(-pi,pi,1e4);
     if param.tapering
         %sepa=bucketheight(zindices(i))'.*separatrix(linspace(-pi,pi,1e4),res_phase(zindices(i)))/rho1D+(gammarofz(zindices(i))-param.gamma0)/param.gamma0/rho1D;
         %sepamin=(gammarofz(zindices(i))-param.gamma0)/param.gamma0-bucketheight(zindices(i))'.*separatrix(linspace(-pi,pi,1e4),res_phase(zindices(i)));
-        sepa=bucketheight(zindices(i))'.*separatrix(x,res_phase(zindices(i)))+(gammarofz(zindices(i))-param.gamma0)/param.gamma0;
-        sepamin=(gammarofz(zindices(i))-param.gamma0)/param.gamma0-bucketheight(zindices(i))'.*separatrix(x,res_phase(zindices(i)));
+        sepa=bucketheight(zidx(i))'.*separatrix(x,res_phase(zidx(i)))+(gammarofz(zidx(i))-param.gamma0)/param.gamma0;
+        sepamin=(gammarofz(zidx(i))-param.gamma0)/param.gamma0-bucketheight(zidx(i))'.*separatrix(x,res_phase(zidx(i)));
     else
-sepa=bucketheight(zindices(i))'.*separatrix(x,res_phase(zindices(i)));
-sepamin=-bucketheight(zindices(i))'.*separatrix(x,res_phase(zindices(i)));
-gammarofz=param.gamma0.*ones(length(zindices));
+    sepa=bucketheight(zidx(i))'.*separatrix(x,res_phase(zidx(i)));
+    sepamin=-bucketheight(zidx(i))'.*separatrix(x,res_phase(zidx(i)));
+    gammarofz=param.gamma0.*ones(length(zidx));
     end
-fieldphase(i)=mean(angle(radfield(zindices(i),:)));
-tp=squeeze(thetap(zindices(i),:,:))+fieldphase(i)+pi/2;% You can add the phase of the field if you want
-gp=squeeze(gammap(zindices(i),:,:));    
+fieldphase(i)=mean(angle(radfield(zidx(i),:)));
+tp=squeeze(thetap(zidx(i),:,:))+fieldphase(i)+pi/2;% You can add the phase of the field if you want
+gp=squeeze(gammap(zidx(i),:,:));    
 tresh=reshape(tp,[1,size(tp,1)*size(tp,2)]);gresh=reshape(gp,[1,size(gp,1)*size(gp,2)]);
 %tresh=squeeze(thetap(zindices(i),param.Nsnap/2,:));gresh=squeeze(gammap(zindices(i),param.Nsnap/2,:));
 %CALCULATE THE TRAPPING FRACTION
 %[psi1,psi2]=bucket_parameters(param.psir);% This is for const res phase
-[psi1,psi2]=bucket_parameters(res_phase(zindices(i)));% This is for the general case
+[psi1,psi2]=bucket_parameters(res_phase(zidx(i)));% This is for the general case
 indi=(mod(tp,2*pi)-pi)>psi2 & (mod(tp,2*pi)-pi)<psi1;
 g2=(gp(indi)./(meanenergy(1))-1);
 %g2=(gp(indi)./(param.gamma0)-1);% This is ~ the same as the above line
 angoli=(mod(tp(indi),2*pi)-pi);
-indi2=g2<(bucketheight(zindices(i))'.*separatrix(angoli,param.psir)+(gammarofz(zindices(i))-param.gamma0)/param.gamma0);
+indi2=g2<(bucketheight(zidx(i))'.*separatrix(angoli,param.psir)+(gammarofz(zidx(i))-param.gamma0)/param.gamma0);
 ftrap(i)=numel(g2(indi2))/numel(gp);
 
 ind=x<psi1 & x>psi2;
@@ -292,7 +316,7 @@ if param.itdp
 plot((mod(tresh,2*pi)-pi)./pi,(gresh./(meanenergy(1))-1)*100,'*k','MarkerSize',1)
 else     
     subplot(1,2,1)
-    semilogy([1:zindices(i)]*param.stepsize/Lgain,power(1:zindices(i))/param.Ee/param.I,'k')    
+    semilogy([1:zidx(i)]*param.stepsize/Lgain,power(1:zidx(i))/param.Ee/param.I,'k')    
     xlim([0,lwig]./Lgain);ylim([min(power),2*max(power)]./param.Ee/param.I)
     %plot([1:zindices(i)]*param.stepsize/Lgain,power(1:zindices(i))/param.Ee/param.I,'k')
     %xlim([0,lwig]./Lgain);ylim([min(power),1.1*max(power)]./param.Ee/param.I)
