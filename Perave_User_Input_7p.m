@@ -14,8 +14,8 @@ param.psir = pi/4;
 param.order = 2;
 param.ratio = 0.03/(lwig-param.z0)^param.order;
 %% Simulation control options
-param.phasespacemovie=0;
-param.itdp = 1;
+param.phasespacemovie=1;
+param.itdp = 0;
 param.saveoutput=0;
 % Set simulation length and # of snapshots
 param.delz=10;
