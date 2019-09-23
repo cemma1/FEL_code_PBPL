@@ -4,7 +4,7 @@ PERAVE 1-D FEL code basic documentation
 
 What is Perave?
 
-Perave is a matlab based code package which solves the 1-D FEL equations for a helical undulator system. The motivation for writing this code was to have a fast, simple tool which allowed us to study high efficiency FELs and the physics of undulator tapering. 
+Perave is a matlab based code package which solves the 1-D FEL equations for a helical and planar undulator system. The motivation for writing this code was to have a fast, simple tool which allowed us to study high efficiency FELs and the physics of undulator tapering. The reason this code was originally written for helical undulators is the advantages of helical geometry for achieving high extraction efficiency in FELs.
 
 How to run the code
 
