@@ -17,11 +17,11 @@ param.saveoutput=1;
 param.delz=1;
 param.stepsize = param.lambdau*param.delz;
 param.Nsnap = round(lwig/param.stepsize);                    % number of snapshots to take over the length of the undulator
-param.shotnoise = 1;
+param.shotnoise = 1;                                % Only matters if param.itdp = 1;
 param.zsep = param.delz;                                                              
 if(~param.itdp)
     param.nslices = 1;
-    param.shotnoise =0;   % Note if you want to model time independent start-up from noise set P0 = pnoise
+    param.shotnoise =0;                            % Note if you want to model time independent start-up from noise set P0 = pnoise
 else
     param.nslices = round(5*param.Nsnap);          % Num of slices: Note you want more than 1 slippage length Nsnap
 end
@@ -35,7 +35,7 @@ A_mode = pi*param.waist^2/2;
 param.E0 = sqrt(2*P0/c/eps0/A_mode/2);                        % Assume circular polarization  
 %% Electron beam parameters
 param.gamma0 = sqrt(param.k/2/param.ku*(1+param.K^2));        % relativistic gamma factor
-param.Np = 256;                                              % # of macroparticles (500-1000 well) 
+param.Np = 512;                                               % # of macroparticles (500-1000 well) 
 param.Ee = param.gamma0*me*c^2/e0;                            % Total e-beam energy (eV)
 energyspread = 1.5;                                           % Absolute energy spread MeV
 param.deltagammarel = energyspread/param.gamma0/0.511;        % Relative energy spread dgamma/gamma
@@ -49,7 +49,7 @@ if param.prebunching
     param.P0=P0required;                                          % Set the seed power to the power required for pre-bunching
     param.E0 = sqrt(param.P0/c/eps0/A_mode);                      % Assume circular polarization
 end
-betax=10;                                                     % Beta function
+betax=10;                                                     % Beta function (m)
 emitx=0.4e-6;                                                 % Transverse emittance
 param.I = 4000;                                               % beam current 
 param.sigmax = sqrt(betax*emitx/param.gamma0);                % beam radius
