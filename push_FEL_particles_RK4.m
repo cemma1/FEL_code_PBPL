@@ -24,11 +24,11 @@ newphasespace(:,1)=phasespace(:,1)+1/6*(k1theta+2*k2theta+2*k3theta+k4theta);
 newphasespace(:,2)=phasespace(:,2)+1/6*(k1gamma+2*k2gamma+2*k3gamma+k4gamma);
 
 % Predictor-Corrector method for the field
-
-f1=param.chi1*kvalue*...
-     mean(exp(-1i*phasespace(:,1))./phasespace(:,2));
+ 
+ f1=param.chi1*kvalue*...
+     sum(exp(-1i*phasespace(:,1))./phasespace(:,2))./length(phasespace);
 f1star=param.chi1*kvalue*...
-     mean(exp(-1i*newphasespace(:,1))./newphasespace(:,2));
+     sum(exp(-1i*newphasespace(:,1))./newphasespace(:,2))./length(phasespace);
 
 newevalue=evalue-param.stepsize/2.*(f1+f1star);
  
