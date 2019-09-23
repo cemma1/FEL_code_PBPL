@@ -4,7 +4,6 @@ if verLessThan('matlab','9.1')
 warning('Including functions in scripts requires MATLAB R2016b or later')
 warning('Functions defined inside perave_postprocessor script need to be defined as separate functions')
 end
-profile on
 %% Load physical constants
 physical_constants        
 %% Load the User Determined initial conditions
@@ -18,10 +17,9 @@ generate_perave_particles_v7h
 %% Run the main integration routine
     t0 = tic;            
     perave_core_v7h;        
-    disp(['Simulation time = ',num2str(toc(t0)./60),' min'])
-    profile viewer
+    disp(['Simulation time = ',num2str(toc(t0)./60),' min'])    
 %% Post-process output
-% perave_postprocessor_7h    
-% if param.saveoutput
-% save_perave_output 
-% end
+perave_postprocessor_7h    
+if param.saveoutput
+save_perave_output 
+end
