@@ -4,8 +4,9 @@ kw=2*pi/param.lambdau;
 hbar=6.582e-16;
 %% Spectrum as a function of z
 zpos= [1:param.Nsnap]*param.stepsize;
-zlocations=linspace(param.stepsize,lwig,30);fundpower=[];sidebandpower=[];
+zlocations=linspace(param.stepsize,lwig,30);
 zindices=round(zlocations/param.stepsize);
+fundpower=[];sidebandpower=[];
 if param.itdp
 omegamin=-5e-3;omegamax=5e-3;
     h=figure(1);
@@ -14,17 +15,19 @@ omegamin=-5e-3;omegamax=5e-3;
     sidebandindex=omega>omegamin & omega<omegamax;
     fundspectrum=powerspec(sidebandindex);
     fundpower(n)=trapz(fundspectrum)/trapz(powerspec);
+    
     figure(1)
     subplot(1,2,1)
     %semilogy(omega,abs(powerspec))
     plot(omega,abs(powerspec))
     xlabel('\delta\omega/\omega_0 ','FontSize',16)
         ylabel('P (\omega) [arb. units]','FontSize',16)    
-        xlim([-100,100].*rho1D)    
+        xlim([-10,10].*rho1D)    
         set(gca,'FontSize',16)
         legend(sprintf(['z / L_u =',num2str(zlocations(n)/lwig,'%.1f')]));    legend boxoff
+        
     subplot(1,2,2)
-    plot([1:1:size(power,2)]*param.zsep,power(zindices(n),:))
+    plot([1:size(power,2)]*param.zsep,power(zindices(n),:))
     xlim([1,size(power,2)]*param.zsep)
     xlabel('ct/\lambda_0 ','FontSize',16)
     ylabel('Output Radiation Power [W]','FontSize',16)
@@ -50,15 +53,15 @@ end
     
 if param.itdp
     subplot(2,3,2)
-    plot([1:1:size(power,2)]*param.zsep,power(end,:))
+    plot([1:size(power,2)]*param.zsep,power(end,:))
     xlim([1,size(power,2)]*param.zsep)
-    xlabel('ct/\lambda_0')
+    xlabel('s/\lambda_0')
     ylabel('Power [W]')
     enhance_plot
     [powerspec,omega]=spectrum_calc(radfield(end,:),param.lambda0,param.zsep);
     subplot(2,3,3)
-    %plot((omega+1)*hbar*2*pi*c/param.lambda0,powerspec,'b');    
-    semilogy((omega+1)*hbar*2*pi*c/param.lambda0,powerspec,'b');    
+    plot((omega+1)*hbar*2*pi*c/param.lambda0,powerspec,'b');    
+    %semilogy((omega+1)*hbar*2*pi*c/param.lambda0,powerspec,'b');    
     xlim([omega(1)+1,omega(end)+1]*hbar*2*pi*c/param.lambda0)    
         xlabel('Photon Energy [eV]')
         ylabel('P (\omega) [arb. units]')

@@ -51,5 +51,6 @@ end
  gammap(:,1:param.Nsnap,:)=[];
  thetap(:,1:param.Nsnap,:)=[];
  end
+ 
         % Calculate radiation power 
  power(:,:) = abs(radfield(:,:)).^2/377*param.A_e;

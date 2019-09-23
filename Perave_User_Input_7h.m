@@ -14,7 +14,7 @@ param.phasespacemovie=1;
 param.itdp = 0;
 param.saveoutput=1;
 % Set simulation length and # of snapshots
-param.delz=10;
+param.delz=1;
 param.stepsize = param.lambdau*param.delz;
 param.Nsnap = round(lwig/param.stepsize);                    % number of snapshots to take over the length of the undulator
 param.shotnoise = 1;
@@ -23,19 +23,19 @@ if(~param.itdp)
     param.nslices = 1;
     param.shotnoise =0;   % Note if you want to model time independent start-up from noise set P0 = pnoise
 else
-    param.nslices = round(6*param.Nsnap);          % Num of slices: Note you want more than 1 slippage length Nsnap
+    param.nslices = round(5*param.Nsnap);          % Num of slices: Note you want more than 1 slippage length Nsnap
 end
 %% radiation parameters
-param.lambda0 = 1.5*1e-10;                                    % Seed wavelength
+param.lambda0 = 1.5*1e-10;                                    % Seed wavelength (m)
 param.k = 2*pi/param.lambda0;                                 % wavenumber in free space
 P0 = 1e4; param.P0=P0;                                        % Seed power (W) 
-zr = 5;                                                       % Rayleigh length of seed
+zr = 5;                                                       % Rayleigh length of seed (m)
 param.waist = sqrt(zr*param.lambda0/pi);
 A_mode = pi*param.waist^2/2;
 param.E0 = sqrt(2*P0/c/eps0/A_mode/2);                        % Assume circular polarization  
 %% Electron beam parameters
 param.gamma0 = sqrt(param.k/2/param.ku*(1+param.K^2));        % relativistic gamma factor
-param.Np = 1024;                                              % # of macroparticles (500-1000 well) 
+param.Np = 256;                                              % # of macroparticles (500-1000 well) 
 param.Ee = param.gamma0*me*c^2/e0;                            % Total e-beam energy (eV)
 energyspread = 1.5;                                           % Absolute energy spread MeV
 param.deltagammarel = energyspread/param.gamma0/0.511;        % Relative energy spread dgamma/gamma
