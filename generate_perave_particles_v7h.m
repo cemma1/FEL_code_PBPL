@@ -1,7 +1,7 @@
 %% Initialize current profile if set in user input
 if param.currprofile
     dt = param.zsep*param.lambda0/c;
-    tvector = [1:param.nslices].*dt-round((param.nslices+param.Nsnap)/2).*dt;
+    tvector = [1:param.nslices].*dt-round((param.nslices+param.Nsnap)/2.5).*dt;
     param.Iprofile = param.I.*exp(-tvector.^2/2/param.sigmat^2);    
 else
     param.Iprofile = param.I.*ones(1,param.nslices);

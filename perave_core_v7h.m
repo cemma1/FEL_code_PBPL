@@ -54,8 +54,7 @@ for ij = 1:param.Nsnap-1  % takes Nsnap snapshots along length of undulator
                 disp(Area1)
                 ac(ij) = areaconst(ind);
                                pause
-                %} 
-                                
+                %}                                 
                 else
                 Kz(ij+1)=Kz(ij)-param.stepsize/const_resp*mean(abs(radfield(ij,param.Nsnap:param.nslices)),2).*sin(res_phase(ij));  
                 alpha1 = (1-sin(res_phase(ij)))/(1+sin(res_phase(ij)));

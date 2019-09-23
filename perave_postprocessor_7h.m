@@ -270,6 +270,58 @@ Im_n(n,:)=param.chi1(1)./param.k*Kz(n)./abs(radfield(n,:)).*(sin(meanphase)./mea
 end
 figure;
 subplot(1,2,1);surface(Re_n);shading interp;subplot(1,2,2);surface(Im_n);shading interp
+%% eSASE plots
+zlocations=linspace(param.stepsize,lwig,30);
+zidx=round(zlocations/param.stepsize);
+for n=1:length(zidx)
+    
+    tp=squeeze(thetap(zidx(n),:,:))+pi/2;% You can add the phase of the field if you want
+    gp=squeeze(gammap(zidx(n),:,:))+pi/2;% You can add the phase of the field if you want
+    
+    slice_bunching = abs(mean(exp(1j.*tp),2));
+    slice_energy = mean(gp,2);
+    
+    tposition = [1:size(power(zidx(n),:),2)]*param.zsep*param.lambda0/c;
+    tailslice = param.Nsnap+1;    
+            
+    if param.currprofile
+        filename = 'eSASE_movie'
+    figure(23) 
+    subplot(3,1,1)
+        yyaxis left
+        plot(tposition/tcoh,power(zidx(n),:)/rho1D/param.I/param.Ee)
+        ylabel('P/\rho P_{beam}','FontSize',16)
+        yyaxis right
+        plot(tposition/tcoh,param.Iprofile(tailslice:end).*1e-3)
+        ylabel('Current [kA]','FontSize',16)
+        
+    subplot(3,1,2)
+        yyaxis left
+        plot(tposition/tcoh,slice_bunching)% You need to find where B(s) is stored...
+        ylabel('Bunching Factor','FontSize',16)
+        yyaxis right
+        plot(tposition,param.Iprofile(tailslice:end).*1e-3)
+        ylabel('Current [kA]','FontSize',16)
+    
+    subplot(3,1,3)
+        yyaxis left
+        plot(tposition/tcoh,(slice_energy-param.gamma0)/rho1D/param.gamma0)% You need to find where B(s) is stored...
+        ylabel('\Delta \gamma/\rho\gamma_0','FontSize',16)
+        yyaxis right
+        plot(tposition,param.Iprofile(tailslice:end).*1e-3)
+        ylabel('Current [kA]','FontSize',16)
+        xlabel('t/t_c','FontSize',16)
+        
+              frame = getframe(23);
+      im = frame2im(frame);
+      [imind,cm] = rgb2ind(im,256);
+      if i == 1;
+          imwrite(imind,cm,filename,'gif', 'Loopcount',inf);
+      else
+          imwrite(imind,cm,filename,'gif','WriteMode','append');
+      end
+    end
+end
 %% Phasespace movie
 zlocations=linspace(param.stepsize,lwig,50);
 zidx=round(zlocations/param.stepsize);

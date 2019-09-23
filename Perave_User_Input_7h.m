@@ -2,11 +2,11 @@
 %%%%User entered parameters%%%%%
 %% Undulator parameters
 param.lambdau = 2.0e-2;                                     % undulator period
-param.K = 3; %e0*Bfield*/me/c/ku;                       % RMS undulator parameter
+param.K = 3; %e0*Bfield*/me/c/ku;                           % RMS undulator parameter
 param.ku = 2.*pi./param.lambdau;                            % undulator wavenumber
-lwig=param.lambdau*0.5e3;                                     % Undulator length m    
+lwig=param.lambdau*1.5e3;                                     % Undulator length m    
 % Tapering options
-param.tapering = 1;                                         % tapering (0 no tapering ; 1 decelation)    
+param.tapering = 0;                                         % tapering (0 no tapering ; 1 decelation)    
 param.z0 = param.lambdau*100*2;
 param.psir = 10*pi/180;
 kmrtaper = 0;
@@ -17,18 +17,18 @@ psirgradient = 27*1/lwig*pi/180;                % 0 by default, only matters if 
 %% Simulation control options
 param.phasespacemovie=0;
 param.itdp = 1;
-param.saveoutput=1;
+param.saveoutput=0;
 % Set simulation length and # of snapshots
-param.delz=5;   
+param.delz=2;   
 param.stepsize = param.lambdau*param.delz;
-param.Nsnap = round(lwig/param.stepsize);                      % number of snapshots to take over the length of the undulator
+param.Nsnap = round(lwig/param.stepsize);                    % number of snapshots to take over the length of the undulator
 param.shotnoise = 1;
-param.zsep = 1;                                                              
+param.zsep = param.delz;                                                              
 if(~param.itdp)
     param.nslices = 1;
     param.shotnoise =1;                                        % Note if you want to model time independent start-up from noise set P0 = pnoise
 else
-    param.nslices = round(10*param.Nsnap);                    % Note you want more than 1 slippage length (Nsnap)
+    param.nslices = round(3*param.Nsnap);                    % Note you want more than 1 slippage length (Nsnap)
 end
 %% radiation parameters
 param.lambda0 = 1.2424*1e-9;                                  % Seed wavelength
@@ -41,10 +41,10 @@ A_mode = pi*param.waist^2/2;
 param.E0 = sqrt(2*P0/c/eps0/A_mode/2);                        % Assume circular polarization
 % To include a non-uniform seed field distribution 
 param.fieldprofile = 0;                                       % 0 = uniform current profile 1 = gaussian
-param.sigmatfield = 100e-18;                                  % beam sigma [s], only for param.currprofile =1
+param.sigmatfield = 250e-18;                                  % beam sigma [s], only for param.currprofile =1
 %% Electron beam parameters
 param.gamma0 = sqrt(param.k/2/param.ku*(1+param.K^2));        % relativistic gamma factor
-param.Np = 1024;                                              % # of macroparticles (500-1000 well) 
+param.Np = 512;                                              % # of macroparticles (500-1000 well) 
 param.Ee = param.gamma0*me*c^2/e0;                            % Total e-beam energy (eV)
 energyspread = 1.5475;                                           % Absolute energy spread MeV
 param.deltagammarel = energyspread/param.gamma0/0.511;        % Relative energy spread dgamma/gamma
@@ -64,8 +64,8 @@ param.sigmax = sqrt(betax*emitx/param.gamma0);                % beam radius
 param.A_e = 2*pi*param.sigmax^2;                              % beam cross section 
 bunchlength=param.nslices*param.zsep*param.lambda0/c;
 % To include a non-uniform current distribution 
-param.currprofile = 0;                                        % 0 = uniform current profile 1 = gaussian
-param.sigmat = 500e-18;                                       % beam sigma [s], only for gaussian (param.currprofile =1)
+param.currprofile = 1;                                        % 0 = uniform current profile 1 = gaussian
+param.sigmat = 250e-18;                                       % beam sigma [s], only for gaussian (param.currprofile =1)
 %% Simplifying constants
 param.chi2 = e0/me/c^2;
 % Constant for the resonant phase calculation   
