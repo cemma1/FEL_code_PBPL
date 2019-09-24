@@ -3,6 +3,8 @@ close all
 set(groot, 'defaultTextInterpreter','tex')
 kw=2*pi/param.lambdau;
 hbar=6.582e-16;
+%tcoh=sqrt(10*pi)/3/rho1D*param.lambda0/2/pi/3e8;% Can't remember where this came from
+tcoh = param.lambda0/(2*sqrt(pi)*0.95*rho1D)/3e8;% From Huang, Kim, Lindberg p. 120
 %% Field z vs s
 figure;imagesc(abs(radfield));set(gca,'YDir','normal')
 xlabel('s');ylabel('z');h1 = colorbar
@@ -13,7 +15,7 @@ zlocations=linspace(param.stepsize,lwig,30);fundpower=[];sidebandpower=[];
 zidx=round(zlocations/param.stepsize);
 if param.itdp
     dt = param.zsep*param.lambda0/c;
-    tposition = [1:size(power,2)]*dt*1e15;
+    tposition = [1:size(power,2)]*dt/tcoh;
 omegamin=-7e-3;omegamax=7e-3; % For sideband filtering 
 h=figure(1);
 %set(h, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
@@ -27,11 +29,11 @@ fundpower(n)=trapz(fundspectrum)/trapz(powerspec);
 figure(1)
 subplot(1,2,1)
 %plot((omega+1)*hbar*2*pi*c/param.lambda0,powerspec)%Energy spectrum
-semilogy(omega,abs(powerspec))
-%plot(omega,abs(powerspec))
+%semilogy(omega,abs(powerspec))
+plot(omega,abs(powerspec))
 xlabel('\delta\omega/\omega ','FontSize',16)
     ylabel('P (\omega) [arb. units]','FontSize',16)    
-    xlim([-100,100].*rho1D)    
+    xlim([-20,20].*rho1D)    
     set(gca,'FontSize',16)
     legend(sprintf(['z / L_u =',num2str(zlocations(n)/lwig)]));
     
@@ -49,7 +51,7 @@ else
  ylabel('Output Radiation Power [W]','FontSize',16)
 end    
 xlim([0,tposition(end)])
-xlabel('t [fs]','FontSize',16)
+xlabel('t/t_c','FontSize',16)
 set(gca,'FontSize',16)
 drawnow
 
@@ -82,16 +84,16 @@ if param.itdp
 subplot(2,3,2)
 plot(tposition,power(end,:))
 xlim([0,tposition(end)])
-xlabel('t [fs]')
+xlabel('t/t_c')
 ylabel('Power [W]')
-tcoh=sqrt(10*pi)/3/rho1D*param.lambda0/2/pi/3e8;
+
 legend(sprintf(['t_c ~ ',num2str(tcoh*1e15,'%.2f'),' fs']))
 enhance_plot
 [powerspec,omega]=spectrum_calc(radfield(end,:),param.lambda0,param.zsep);
 subplot(2,3,3)
-%plot((omega+1)*hbar*2*pi*c/param.lambda0,powerspec,'b');    
-semilogy((omega+1)*hbar*2*pi*c/param.lambda0,powerspec,'b');    
-xlim([omega(1)+1,omega(end)+1]*hbar*2*pi*c/param.lambda0)    
+plot((omega+1)*hbar*2*pi*c/param.lambda0,powerspec,'b');    
+%semilogy((omega+1)*hbar*2*pi*c/param.lambda0,powerspec,'b');    
+xlim([(omega(1)+1)*(1-1e-3),(omega(end)+1)*(1+1e-3)]*hbar*2*pi*c/param.lambda0)    
     xlabel('Photon Energy [eV]')
     ylabel('P (\omega) [arb. units]')
     enhance_plot
@@ -271,7 +273,7 @@ end
 figure;
 subplot(1,2,1);surface(Re_n);shading interp;subplot(1,2,2);surface(Im_n);shading interp
 %% eSASE plots
-zlocations=linspace(param.stepsize,lwig,30);
+zlocations=linspace(param.stepsize,lwig,50);
 zidx=round(zlocations/param.stepsize);
 for n=1:length(zidx)
     
@@ -285,7 +287,7 @@ for n=1:length(zidx)
     tailslice = param.Nsnap+1;    
             
     if param.currprofile
-        filename = 'eSASE_movie'
+        filename = 'eSASE_movie.gif'
     figure(23) 
     subplot(3,1,1)
         yyaxis left
@@ -312,14 +314,14 @@ for n=1:length(zidx)
         ylabel('Current [kA]','FontSize',16)
         xlabel('t/t_c','FontSize',16)
         
-              frame = getframe(23);
-      im = frame2im(frame);
-      [imind,cm] = rgb2ind(im,256);
-      if i == 1;
-          imwrite(imind,cm,filename,'gif', 'Loopcount',inf);
-      else
-          imwrite(imind,cm,filename,'gif','WriteMode','append');
-      end
+%               frame = getframe(23);
+%       im = frame2im(frame);
+%       [imind,cm] = rgb2ind(im,256);
+%       if i == 1;
+%           imwrite(imind,cm,filename,'gif', 'Loopcount',inf);
+%       else
+%           imwrite(imind,cm,filename,'gif','WriteMode','append');
+%       end
     end
 end
 %% Phasespace movie
