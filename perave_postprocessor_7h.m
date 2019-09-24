@@ -27,11 +27,11 @@ fundpower(n)=trapz(fundspectrum)/trapz(powerspec);
 figure(1)
 subplot(1,2,1)
 %plot((omega+1)*hbar*2*pi*c/param.lambda0,powerspec)%Energy spectrum
-semilogy(omega,abs(powerspec))
-%plot(omega,abs(powerspec))
+%semilogy(omega,abs(powerspec))
+plot(omega,abs(powerspec))
 xlabel('\delta\omega/\omega ','FontSize',16)
     ylabel('P (\omega) [arb. units]','FontSize',16)    
-    xlim([-100,100].*rho1D)    
+    xlim([-10,10].*rho1D)    
     set(gca,'FontSize',16)
     legend(sprintf(['z / L_u =',num2str(zlocations(n)/lwig)]));
     
@@ -271,7 +271,7 @@ end
 figure;
 subplot(1,2,1);surface(Re_n);shading interp;subplot(1,2,2);surface(Im_n);shading interp
 %% eSASE plots
-zlocations=linspace(param.stepsize,lwig,30);
+zlocations=linspace(param.stepsize,lwig,200);
 zidx=round(zlocations/param.stepsize);
 for n=1:length(zidx)
     
@@ -290,7 +290,7 @@ for n=1:length(zidx)
     subplot(3,1,1)
         yyaxis left
         plot(tposition/tcoh,power(zidx(n),:)/rho1D/param.I/param.Ee)
-        ylabel('P/\rho P_{beam}','FontSize',16)
+        ylabel('P/\rho P_{beam}','FontSize',16)       
         yyaxis right
         plot(tposition/tcoh,param.Iprofile(tailslice:end).*1e-3)
         ylabel('Current [kA]','FontSize',16)
@@ -298,28 +298,32 @@ for n=1:length(zidx)
     subplot(3,1,2)
         yyaxis left
         plot(tposition/tcoh,slice_bunching)% You need to find where B(s) is stored...
-        ylabel('Bunching Factor','FontSize',16)
+        ylim([0,1])
+        ylabel('Bunching Factor','FontSize',16)        
         yyaxis right
-        plot(tposition,param.Iprofile(tailslice:end).*1e-3)
+        plot(tposition/tcoh,param.Iprofile(tailslice:end).*1e-3)
         ylabel('Current [kA]','FontSize',16)
-    
+            
     subplot(3,1,3)
         yyaxis left
         plot(tposition/tcoh,(slice_energy-param.gamma0)/rho1D/param.gamma0)% You need to find where B(s) is stored...
         ylabel('\Delta \gamma/\rho\gamma_0','FontSize',16)
         yyaxis right
-        plot(tposition,param.Iprofile(tailslice:end).*1e-3)
+        plot(tposition/tcoh,param.Iprofile(tailslice:end).*1e-3)
         ylabel('Current [kA]','FontSize',16)
         xlabel('t/t_c','FontSize',16)
         
-              frame = getframe(23);
-      im = frame2im(frame);
-      [imind,cm] = rgb2ind(im,256);
-      if i == 1;
-          imwrite(imind,cm,filename,'gif', 'Loopcount',inf);
-      else
-          imwrite(imind,cm,filename,'gif','WriteMode','append');
-      end
+%       drawnow
+%       frame = getframe(23);
+%       im = frame2im(frame);
+%       [imind,cm] = rgb2ind(im,256);
+%       if n == 1;
+%           imwrite(imind,cm,filename,'gif', 'Loopcount',inf);
+%       else
+%           imwrite(imind,cm,filename,'gif','WriteMode','append');
+%       end
+      
+            
     end
 end
 %% Phasespace movie

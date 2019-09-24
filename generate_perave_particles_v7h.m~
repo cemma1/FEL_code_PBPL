@@ -1,5 +1,5 @@
 %% Initialize current profile if set in user input
-if param.currprofile==1 % Gaussian with rms size sigmat
+if param.currprofile % Gaussian with rms size sigmat
     dt = param.zsep*param.lambda0/c;
     tvector = [1:param.nslices].*dt-round((param.nslices+param.Nsnap)/2.5).*dt;
     param.Iprofile = param.I.*exp(-tvector.^2/2/param.sigmat^2);    
@@ -7,9 +7,11 @@ if param.currprofile==1 % Gaussian with rms size sigmat
 elseif param.currprofile ==2 % Trapezoidal with gradient g
     dt = param.zsep*param.lambda0/c;
     tvector = [1:param.nslices].*dt-round((param.nslices+param.Nsnap)/2.5).*dt;
-    param.Iprofile = 0.0*[1:param.nslices];    
-    idx = tvector > 0.0 & tvector < 2*param.sigmat;    
-    param.Iprofile(idx) = param.I - param.currgradient*tvector(idx)/2/param.sigmat    
+    
+    param.Ip = ([1:length(lambda)]-round(length(lambda)/2))*4e-6/500;% in m
+    normalization = Ne/trapz(s,lambda);
+    lambda = normalization*lambda;% electrons/m
+    dlambda_ds = diff(lambda)/(s(2)-s(1));
 
     
 else
@@ -17,8 +19,8 @@ else
 end
 
 
-figure
-plot([1:param.nslices],param.Iprofile)
+
+
 
 param.chi1=mu0*c/2.*param.Iprofile./param.A_e; % Simplifying constant for current density
 %% initialize phase space (Quiet - start problem )
