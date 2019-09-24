@@ -4,6 +4,7 @@ clear all
 close all
 %% Load physical constants
 physical_constants        
+%profile on
 %% Load the User Determined initial conditions
 Perave_User_Input_7h 
 %% Calculate 1-D FEL parameters
@@ -18,6 +19,7 @@ generate_perave_particles_v7h
     t0 = tic;            
     perave_core_v7h;        
     disp(['Simulation time = ',num2str(toc(t0)./60),' min'])
+%    profile viewer
 %% Post-process output
 perave_postprocessor_7h    
 if param.saveoutput

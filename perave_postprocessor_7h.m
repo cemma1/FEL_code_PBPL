@@ -9,7 +9,6 @@ tcoh = param.lambda0/(2*sqrt(pi)*0.95*rho1D)/3e8;% From Huang, Kim, Lindberg p. 
 figure;imagesc(abs(radfield));set(gca,'YDir','normal')
 xlabel('s');ylabel('z');h1 = colorbar
 title(h1,'|E|');enhance_plot('FontSize',20)
-
 %% Spectrum as a function of z
 zlocations=linspace(param.stepsize,lwig,30);fundpower=[];sidebandpower=[];
 zidx=round(zlocations/param.stepsize);
@@ -19,7 +18,6 @@ if param.itdp
 omegamin=-7e-3;omegamax=7e-3; % For sideband filtering 
 h=figure(1);
 %set(h, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
-
 for n=1:length(zidx)
 
 [powerspec,omega]=spectrum_calc(radfield(zidx(n),:),param.lambda0,param.zsep);
@@ -33,11 +31,10 @@ subplot(1,2,1)
 plot(omega,abs(powerspec))
 xlabel('\delta\omega/\omega ','FontSize',16)
     ylabel('P (\omega) [arb. units]','FontSize',16)    
-
     xlim([-10,10].*rho1D)    
 
     set(gca,'FontSize',16)
-    legend(sprintf(['z / L_u =',num2str(zlocations(n)/lwig)]));
+    legend(sprintf(['z / L_u =',num2str(zlocations(n)/lwig,'%.1f')]));legend boxoff
     
 subplot(1,2,2)
 tailslice = param.Nsnap+1;
@@ -55,6 +52,7 @@ end
 xlim([0,tposition(end)])
 xlabel('t/t_c','FontSize',16)
 set(gca,'FontSize',16)
+legend(strcat('t_c = ',num2str(tcoh*1e18,'%.1f'),' as'));legend boxoff
 drawnow
 
 end
@@ -89,7 +87,7 @@ xlim([0,tposition(end)])
 xlabel('t/t_c')
 ylabel('Power [W]')
 
-legend(sprintf(['t_c ~ ',num2str(tcoh*1e15,'%.2f'),' fs']))
+legend(sprintf(['t_c ~ ',num2str(tcoh*1e18,'%.1f'),' as']))
 enhance_plot
 [powerspec,omega]=spectrum_calc(radfield(end,:),param.lambda0,param.zsep);
 subplot(2,3,3)
@@ -289,10 +287,10 @@ for n=1:length(zidx)
     tposition = [1:size(power(zidx(n),:),2)]*param.zsep*param.lambda0/c;
     tailslice = param.Nsnap+1;    
             
-    if param.currprofile
+    if param.currprofile && param.itdp
         filename = 'eSASE_movie.gif'
-    figure(23) 
-    subplot(3,1,1)
+        figure(23) 
+        subplot(3,1,1)
         yyaxis left
         plot(tposition/tcoh,power(zidx(n),:)/rho1D/param.I/param.Ee)
         ylabel('P/\rho P_{beam}','FontSize',16)       
@@ -379,8 +377,7 @@ else
     %plot([1:zindices(i)]*param.stepsize/Lgain,power(1:zindices(i))/param.Ee/param.I,'k')
     %xlim([0,lwig]./Lgain);ylim([min(power),1.1*max(power)]./param.Ee/param.I)
     xlabel('z/L_g');ylabel('P/P_{beam}')
-    set(gca,'YTick',logspace(-4,-1,4))
-    enhance_plot('Times',20)
+    set(gca,'YTick',logspace(-4,-1,4),'FontSize',18)    
     hold on
     legend(['z/L_u = ',num2str(zlocations(i)/lwig,'%.2f')],'location','SouthEast')
     legend boxoff
@@ -388,8 +385,8 @@ else
     % Without the separatrix
     %plot((mod(tp,2*pi)-pi)./pi,(gp./(meanenergy(1))-1),'.k','MarkerSize',1)        
     plot((mod(tp,2*pi)-pi)./pi,(gp./(meanenergy(1))-1)*100,'.k',x(ind)/pi,sepa(ind)*100,'r',x(ind)/pi,sepamin(ind)*100,'r','LineWidth',2)
-    set(gca,'FontSize',20)
-    xlabel('\Psi/pi');ylabel('\Delta \gamma/\gamma_0');%enhance_plot('FontSize',16)
+    set(gca,'FontSize',18)
+    xlabel('\Psi/pi');ylabel('\Delta \gamma/\gamma_0');
     drawnow
 end
 xlim([-1,1])
@@ -451,7 +448,8 @@ function [ psi1, psi2, bucket_height, capture_fraction, bucket_area, bunching, s
  
 psi1 = pi - psir;
 pond = @(psi,psir) cos(psi1)+psi1*sin(psir)-(cos(psi)+psi*sin(psir));
-psi2 = fsolve(@(psi) pond(psi,psir),[-pi:psi1*0.99]);
+options = optimset('Display','off');
+psi2 = fsolve(@(psi) pond(psi,psir),[-pi:psi1*0.99],options);
 psi2 = psi2(1);
 bucket_height = sqrt(cos(psir)-(pi/2-psir)*sin(psir));
 bucket_area = (1-sin(psir)) / (1+sin(psir));
