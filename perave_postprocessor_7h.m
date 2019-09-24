@@ -33,11 +33,9 @@ subplot(1,2,1)
 plot(omega,abs(powerspec))
 xlabel('\delta\omega/\omega ','FontSize',16)
     ylabel('P (\omega) [arb. units]','FontSize',16)    
-<<<<<<< HEAD
+
     xlim([-10,10].*rho1D)    
-=======
-    xlim([-20,20].*rho1D)    
->>>>>>> 211ffd86189e5ec0e4a6eb1c242cfb1a95574ba2
+
     set(gca,'FontSize',16)
     legend(sprintf(['z / L_u =',num2str(zlocations(n)/lwig)]));
     
@@ -277,11 +275,8 @@ end
 figure;
 subplot(1,2,1);surface(Re_n);shading interp;subplot(1,2,2);surface(Im_n);shading interp
 %% eSASE plots
-<<<<<<< HEAD
-zlocations=linspace(param.stepsize,lwig,200);
-=======
-zlocations=linspace(param.stepsize,lwig,50);
->>>>>>> 211ffd86189e5ec0e4a6eb1c242cfb1a95574ba2
+
+zlocations=linspace(param.stepsize,lwig,100);
 zidx=round(zlocations/param.stepsize);
 for n=1:length(zidx)
     
@@ -323,27 +318,14 @@ for n=1:length(zidx)
         ylabel('Current [kA]','FontSize',16)
         xlabel('t/t_c','FontSize',16)
         
-<<<<<<< HEAD
-%       drawnow
-%       frame = getframe(23);
-%       im = frame2im(frame);
-%       [imind,cm] = rgb2ind(im,256);
-%       if n == 1;
-=======
-%               frame = getframe(23);
-%       im = frame2im(frame);
-%       [imind,cm] = rgb2ind(im,256);
-%       if i == 1;
->>>>>>> 211ffd86189e5ec0e4a6eb1c242cfb1a95574ba2
-%           imwrite(imind,cm,filename,'gif', 'Loopcount',inf);
-%       else
-%           imwrite(imind,cm,filename,'gif','WriteMode','append');
-%       end
-<<<<<<< HEAD
-      
-            
-=======
->>>>>>> 211ffd86189e5ec0e4a6eb1c242cfb1a95574ba2
+
+      drawnow
+      frame = getframe(23);
+      im = frame2im(frame);
+      [imind,cm] = rgb2ind(im,256);
+      if n == 1;
+
+    end
     end
 end
 %% Phasespace movie

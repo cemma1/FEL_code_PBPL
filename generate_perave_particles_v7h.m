@@ -1,24 +1,18 @@
-%% Initialize current profile if set in user input
-if param.currprofile==1 % Gaussian with rms size sigmat
-    dt = param.zsep*param.lambda0/c;
-    tvector = [1:param.nslices].*dt-round((param.nslices+param.Nsnap)/2.5).*dt;
-    param.Iprofile = param.I.*exp(-tvector.^2/2/param.sigmat^2);    
-    
-elseif param.currprofile ==2 % Trapezoidal with gradient g
-    dt = param.zsep*param.lambda0/c;
-    tvector = [1:param.nslices].*dt-round((param.nslices+param.Nsnap)/2.5).*dt;
-    param.Iprofile = 0.0*[1:param.nslices];    
-    idx = tvector > 0.0 & tvector < 2*param.sigmat;    
-    param.Iprofile(idx) = param.I - param.currgradient*tvector(idx)/2/param.sigmat    
-
-    
-else
-    param.Iprofile = param.I.*ones(1,param.nslices);
-end
-
-
-figure
-plot([1:param.nslices],param.Iprofile)
+%% Initialize current profile as set by user input
+switch param.currprofile
+    case 0 % Uniform
+        param.Iprofile = param.I.*ones(1,param.nslices);
+    case 1 % Gaussian
+        dt = param.zsep*param.lambda0/c;
+        tvector = [1:param.nslices].*dt-round((param.nslices+param.Nsnap)/2.5).*dt;
+        param.Iprofile = param.I.*exp(-tvector.^2/2/param.sigmat^2);        
+    case 2 % Trapezoid (or top hat)
+        dt = param.zsep*param.lambda0/c;
+        tvector = [1:param.nslices].*dt-round((param.nslices+param.Nsnap)/2.5).*dt;
+        param.Iprofile = 0.0*[1:param.nslices];    
+        idx = tvector > 0.0 & tvector < 2*param.sigmat;    
+        param.Iprofile(idx) = param.I + param.currgradient*tvector(idx)/2/param.sigmat    
+end        
 
 param.chi1=mu0*c/2.*param.Iprofile./param.A_e; % Simplifying constant for current density
 %% initialize phase space (Quiet - start problem )

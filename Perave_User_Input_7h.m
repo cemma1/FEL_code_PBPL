@@ -19,11 +19,7 @@ param.phasespacemovie=1;
 param.itdp = 1;
 param.saveoutput=0;
 % Set simulation length and # of snapshots
-<<<<<<< HEAD
 param.delz=5;   
-=======
-param.delz=3;   
->>>>>>> 211ffd86189e5ec0e4a6eb1c242cfb1a95574ba2
 param.stepsize = param.lambdau*param.delz;
 param.Nsnap = round(lwig/param.stepsize);                    % number of snapshots to take over the length of the undulator
 param.shotnoise = 1;
@@ -37,19 +33,14 @@ end
 %% radiation parameters
 param.lambda0 = 1.2424*1e-9;                                  % Seed wavelength
 param.k = 2*pi/param.lambda0;                                 % wavenumber in free space
-<<<<<<< HEAD
 P0 = 2.2826e3*1e3; param.P0=P0;                               % Seed power (W) 
-=======
-%P0 = 5.94e10/1.6; param.P0=P0;                               % Seed power (W) 
-P0 = 2.0*1e3; param.P0=P0;                                   % Seed power (W) 
->>>>>>> 211ffd86189e5ec0e4a6eb1c242cfb1a95574ba2
 zr = 5;                                                       % Rayleigh length of seed
 param.waist = sqrt(zr*param.lambda0/pi);
 A_mode = pi*param.waist^2/2;
 param.E0 = sqrt(2*P0/c/eps0/A_mode/2);                        % Assume circular polarization
 % To include a non-uniform seed field distribution 
 param.fieldprofile = 0;                                       % 0 = uniform current profile 1 = gaussian
-param.sigmatfield = 300e-18;                                  % beam sigma [s], only for param.currprofile =1
+param.sigmatfield = 250e-18;                                  % beam sigma [s], only for param.currprofile =1
 %% Electron beam parameters
 param.gamma0 = sqrt(param.k/2/param.ku*(1+param.K^2));        % relativistic gamma factor
 param.Np = 512;                                              % # of macroparticles (500-1000 well) 
@@ -72,13 +63,9 @@ param.sigmax = sqrt(betax*emitx/param.gamma0);                % beam radius
 param.A_e = 2*pi*param.sigmax^2;                              % beam cross section 
 bunchlength=param.nslices*param.zsep*param.lambda0/c;
 % To include a non-uniform current distribution 
-<<<<<<< HEAD
-param.currprofile = 2;                                        % 0 = uniform current profile 1 = gaussian
-=======
-param.currprofile = 0;                                        % 0 = uniform current profile 1 = gaussian
->>>>>>> 211ffd86189e5ec0e4a6eb1c242cfb1a95574ba2
+param.currprofile = 2;                                        % 0 = uniform current profile 1 = gaussian 2 = trapezoid
 param.sigmat = 250e-18;                                       % beam sigma [s], only for gaussian (param.currprofile =1)
-param.currgradient = param.I/4;
+param.currgradient = -param.I/4;                              % Slope of trapezoidal current distribution
 %% Simplifying constants
 param.chi2 = e0/me/c^2;
 % Constant for the resonant phase calculation   
