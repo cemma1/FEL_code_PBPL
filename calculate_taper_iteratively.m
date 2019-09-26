@@ -44,7 +44,16 @@ if ~(param.itdp)
                     alpha1 = (1-sin(res_phase(zstep)))/(1+sin(res_phase(zstep)));
                     Area1 = alpha1*sqrt((mean(abs(radfield(zstep,:)).*Kz(zstep))));
                     psirnew = res_phase(zstep+1);
-                   end       
+                   end
+                   
+        case 4 % Polynomial tapering
+            if zstep > firststep
+                Kznew = param.K*(1-param.ctaper*(zstep-firststep).^param.dtaper*param.stepsize^param.dtaper);
+                psirnew = res_phase(zstep+1);
+            else
+                Kznew = Kz(zstep);
+                psirnew = res_phase(zstep+1);
+            end
     end
     
 else
@@ -107,6 +116,14 @@ else
                 Area1 = alpha1*sqrt((mean(abs(radfield(zstep,:)).*Kz(zstep))));
                 psirnew = res_phase(zstep+1);
                 end
-                      
+        
+        case 4 % Polynomial tapering
+            if zstep > firststep
+                Kznew = param.K*(1-param.ctaper*(zstep-firststep).^param.dtaper*param.stepsize^param.dtaper);
+                psirnew = res_phase(zstep+1);
+            else
+                Kznew = Kz(zstep);
+                psirnew = res_phase(zstep+1);               
+            end
     end
 end

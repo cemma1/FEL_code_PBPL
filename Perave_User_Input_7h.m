@@ -4,12 +4,15 @@
 param.lambdau = 3.9e-2;                                     % undulator period
 param.K = 5.5/sqrt(2); %e0*Bfield*/me/c/ku;                 % RMS undulator parameter
 param.ku = 2.*pi./param.lambdau;                            % undulator wavenumber
-lwig=param.lambdau*100;                                     % Undulator length m    
+lwig=param.lambdau*200;                                     % Undulator length m    
 % Tapering options
-param.tapering = 0;                                         % tapering (0 no tapering ; 1 kmr; 2 linear; 3 constant area)    
-param.z0 = param.lambdau*130;
-param.psir = pi/4;
-param.psirgradient = 27*1/lwig*pi/180;                      % 0 by default, Only used if param.tapering = 2 (linear taper)
+param.tapering = 4;                                         % tapering (0 no tapering ; 1 KMR; 2 linear; 3 constant area)    
+param.z0 = param.lambdau;
+param.psir = 3*pi/8;
+param.psirgradient = 27*1/lwig*pi/180;                      % 0 by default, Only used if param.tapering = 2 (linear psir taper)
+param.dtaper = 1;
+deltaKoverK = 0.1;
+param.ctaper = deltaKoverK/((lwig-param.z0).^param.dtaper)
 %param.psir = psirvalues(psirindex);% For scanning
 %% Simulation control options
 param.phasespacemovie=0;
@@ -28,9 +31,9 @@ else
     param.nslices = round(3.5*param.Nsnap);                    % Note you want more than 1 slippage length (Nsnap)
 end
 %% radiation parameters
-param.lambda0 = 8e-10;                                  % Seed wavelength
+param.lambda0 = 8e-10;                                        % Seed wavelength
 param.k = 2*pi/param.lambda0;                                 % wavenumber in free space
-P0 = 2.7e6; param.P0=P0;                               % Seed power (W) 
+P0 = 2.7e6; param.P0=P0;                                      % Seed power (W) 
 zr = 5;                                                       % Rayleigh length of seed
 param.waist = sqrt(zr*param.lambda0/pi);
 A_mode = pi*param.waist^2/2;
@@ -40,9 +43,9 @@ param.fieldprofile = 0;                                       % 0 = uniform curr
 param.sigmatfield = 250e-18;                                  % beam sigma [s], only for param.currprofile =1
 %% Electron beam parameters
 param.gamma0 = sqrt(param.k/2/param.ku*(1+param.K^2));        % relativistic gamma factor
-param.Np = 1024;                                               % # of macroparticles (500-1000 well) 
+param.Np = 512;                                              % # of macroparticles (500-1000 well) 
 param.Ee = param.gamma0*me*c^2/e0;                            % Total e-beam energy (eV)
-energyspread = 8;                                        % Absolute energy spread MeV
+energyspread = 8;                                             % Absolute energy spread MeV
 param.deltagammarel = energyspread/param.gamma0/0.511;        % Relative energy spread dgamma/gamma
 param.deltagamma = param.gamma0*param.deltagammarel;
 param.prebunching = 0;                                        % set to 1 to start from a pre-bunched beam. 

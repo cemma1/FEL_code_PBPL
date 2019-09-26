@@ -288,7 +288,7 @@ for n=1:length(zidx)
     tailslice = param.Nsnap+1;    
             
     if param.currprofile && param.itdp
-        filename = 'eSASE_movie.gif'
+        
         figure(23) 
         subplot(3,1,1)
         yyaxis left
