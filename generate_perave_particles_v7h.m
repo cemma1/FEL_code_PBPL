@@ -23,8 +23,7 @@ tic
 disp('Loading particles ...');
 nbins = 64;
 mpart = param.Np/nbins;
-n_electron = param.I*param.lambda0*param.zsep/e0/c;
-p1 = zeros(param.Np,1);    
+n_electron = param.I*param.lambda0*param.zsep/e0/c; 
 
 %radfield=param.E0*ones(param.Nsnap,param.nslices);
 thetap = zeros(param.Nsnap,param.nslices,param.Np);
@@ -32,7 +31,8 @@ gammap=zeros(param.Nsnap,param.nslices,param.Np);
 
 for islice = 1:param.nslices
 X0 = hammersley(2,param.Np);
-gammap(1,islice,:) = param.gamma0+param.deltagamma*X0(1,:);
+%gammap(1,islice,:) = param.gamma0+param.deltagamma*X0(1,:);
+gammap(1,islice,:) = param.gamma0*(1+param.chirpslope*(islice-round(param.nslices/2)))+param.deltagamma*X0(1,:);
 
 auxtheta1 = hammersley(1,mpart)'*2*pi/nbins-pi;
 
@@ -61,3 +61,12 @@ end
 
 disp('Particles loaded successfully');
 toc
+%% Plot the LPS
+figure
+for m=1:param.nslices
+    zval = (m-1)*param.lambda0+squeeze(thetap(1,m,:))*param.lambda0/2/pi;
+    gammaval = squeeze(gammap(1,m,:))*0.511e-3;
+    plot(zval/param.lambda0,gammaval,'.b');hold on
+end
+xlabel('s/\lambda_r');
+ylabel('Energy [GeV]')
