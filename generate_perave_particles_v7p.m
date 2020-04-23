@@ -1,4 +1,24 @@
 %% initialize phase space (Quiet - start problem )
+if ~param.itdp
+    param.currprofile = 0
+end
+switch param.currprofile
+    case 0 % Uniform
+        param.Iprofile = param.I.*ones(1,param.nslices);
+    case 1 % Gaussian
+        dt = param.zsep*param.lambda0/c;
+        tvector = [1:param.nslices].*dt-round((param.nslices+param.Nsnap)/2.5).*dt;
+        param.Iprofile = param.I.*exp(-tvector.^2/2/param.sigmat^2);        
+    case 2 % Trapezoid (or top hat)
+        dt = param.zsep*param.lambda0/c;
+        tvector = [1:param.nslices].*dt-round((param.nslices+param.Nsnap)/2.5).*dt;
+        param.Iprofile = 0.0*[1:param.nslices];    
+        idx = tvector > 0.0 & tvector < 2*param.sigmat;    
+        param.Iprofile(idx) = 0.0 + param.currgradient*tvector(idx)/2/param.sigmat    
+end        
+
+param.chi1=mu0*c/2.*param.Iprofile./param.A_e; % Simplifying constant for current density
+
 tic
 disp('Loading particles ...');
 nbins = 64;
