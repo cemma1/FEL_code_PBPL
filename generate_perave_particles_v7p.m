@@ -15,8 +15,13 @@ switch param.currprofile
         param.Iprofile = 0.0*[1:param.nslices];    
         idx = tvector > 0.0 & tvector < 2*param.sigmat;    
         param.Iprofile(idx) = 0.0 + param.currgradient*tvector(idx)/2/param.sigmat    
+    case 3 % Import particles from file   
+        MakeDemoParticleDistforPerave
+        disp('E-beam Loaded from External Distribution');
 end        
-
+% Do not initialize particles if they've been loaded from external dist
+    if param.currprofile == 3; return;end
+    
 param.chi1=mu0*c/2.*param.Iprofile./param.A_e; % Simplifying constant for current density
 % Add LSC - LSC E loss formula from [2] Ding et al., PRSTAB 12 060703 (2009)
 
