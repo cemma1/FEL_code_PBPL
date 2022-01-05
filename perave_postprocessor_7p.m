@@ -320,10 +320,10 @@ zgain=z1(z1>zmin & z1<zmax);
 Lgfit=(zgain(end)-zgain(1))/(log(pgain(end)/pgain(1)));
 disp(sprintf(['Lg theory = ' num2str(Lgaintheory)]));
 disp(sprintf(['Lg sim = ' num2str(Lgfit)]));
-% figure
-% semilogy(linspace(zmin,zmax,length(pgain)),pgain)
-% hold on
-% semilogy(linspace(zmin,zmax),pgain(1)*exp((linspace(zmin,zmax)-zmin)./Lgfit),'r--')
+figure
+semilogy(linspace(zmin,zmax,length(pgain)),pgain)
+hold on
+semilogy(linspace(zmin,zmax),pgain(1)*exp((linspace(zmin,zmax)-zmin)./Lgfit),'r--')
 
 end
 

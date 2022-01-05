@@ -23,6 +23,9 @@ k4gamma=param.stepsize*(param.chi2*(khat./(phasespace(:,2)+k3gamma)).*...
 newphasespace(:,1)=phasespace(:,1)+1/6*(k1theta+2*k2theta+2*k3theta+k4theta);
 newphasespace(:,2)=phasespace(:,2)+1/6*(k1gamma+2*k2gamma+2*k3gamma+k4gamma);
 
+% Add LSC energy loss along bunch - this adds zero if LSC is disabled
+newphasespace(:,2)=newphasespace(:,2)+param.LSCEloss(islice); 
+
 % Predictor-Corrector method for the field
 
 f1=param.chi1(islice)*khat*...
